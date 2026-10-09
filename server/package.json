@@ -36,6 +36,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "remotion": "^4.0.499",
+    "resend": "^6.32.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {

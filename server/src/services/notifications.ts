@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '../supabaseAdmin.js'
+import { sendEmail, wrapEmailHtml } from './email.js'
 
 export type NotificationType = 'video_failed' | 'info'
 
@@ -31,6 +32,24 @@ export async function notifyUser(userId: string, opts: NotifyUserOptions): Promi
   })
   if (error) {
     console.error(`[notifications] failed to create notification for user ${userId}:`, error.message)
+  }
+
+  // Best-effort: also email the user a copy of every notification. Looked up
+  // by user ID (not passed in) since every call site above already has it
+  // and we don't want to force every caller to also plumb through an email
+  // address. A lookup failure or missing email must never block the in-app
+  // notification already written above.
+  try {
+    const { data: profile } = await supabaseAdmin.from('profiles').select('email').eq('id', userId).single()
+    if (profile?.email) {
+      await sendEmail({
+        to: profile.email,
+        subject: opts.title,
+        html: wrapEmailHtml(opts.title, `<p>${opts.message}</p>`),
+      })
+    }
+  } catch (err) {
+    console.error(`[notifications] failed to email user ${userId}:`, err instanceof Error ? err.message : err)
   }
 }
 

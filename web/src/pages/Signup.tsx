@@ -13,11 +13,16 @@ export default function Signup() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [agreed, setAgreed] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
+    if (!agreed) {
+      setError('You must agree to the Terms & Conditions and Privacy Policy to create an account.')
+      return
+    }
     setError(null)
     setLoading(true)
     const { error } = await supabase.auth.signUp({
@@ -69,13 +74,28 @@ export default function Signup() {
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" />
             </div>
-            {error && <p className="text-sm text-red-400">{error}</p>}
             <p className="text-xs leading-relaxed text-white/40">
-              By creating an account you agree that credits spent on a video generation that fails are{' '}
+              Credits spent on a video generation that fails are{' '}
               <span className="font-medium text-white/60">not refunded</span>. Generation pricing already accounts
-              for typical failure rates — see our Terms &amp; Conditions.
+              for typical failure rates.
             </p>
-            <Button type="submit" className="w-full" loading={loading}>
+            <label className="flex items-start gap-2 text-[11px] leading-relaxed text-white/50">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-white/20 bg-transparent text-yolk-500 focus:ring-yolk-500"
+              />
+              <span>
+                I have read and agree to the{' '}
+                <Link to="/terms" target="_blank" className="font-medium text-yolk-400 hover:underline">
+                  Terms &amp; Conditions and Privacy Policy
+                </Link>
+                , including the no-refund policy on failed generations.
+              </span>
+            </label>
+            {error && <p className="text-sm text-red-400">{error}</p>}
+            <Button type="submit" className="w-full" loading={loading} disabled={!agreed}>
               Create account
             </Button>
           </form>

@@ -45,7 +45,7 @@ async function runAutopilotTick() {
       // voiceProfileId and aspectRatio are deliberately omitted here:
       // initiateVideoGeneration resolves both automatically for autopilot
       // mode (the account's default cloned voice, and the next size in this
-      // channel's aspect_ratio_mix) — see videoPipeline.ts.
+      // channel's aspect_ratio_mix), see videoPipeline.ts.
       await initiateVideoGeneration({
         userId: channel.user_id,
         channelId: channel.id,

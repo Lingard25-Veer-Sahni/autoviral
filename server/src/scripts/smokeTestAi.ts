@@ -3,7 +3,7 @@ import { generateVideoContent } from '../services/ai.js'
 import { aiProvider, aiConfigured } from '../services/ai.js'
 
 // One-off smoke test for whichever AI provider is currently active (see
-// AI_PROVIDER in server/.env) — confirms the API key actually works and the
+// AI_PROVIDER in server/.env), confirms the API key actually works and the
 // provider returns a schema-valid script, not just that the code compiles.
 // Run with: npx tsx src/scripts/smokeTestAi.ts
 

@@ -63,7 +63,7 @@ async function exchangeForLongLivedToken(shortLivedToken: string): Promise<strin
 }
 
 export interface InstagramAccountLink {
-  /** Long-lived Page access token used for every publish call — this is what we store, encrypted. */
+  /** Long-lived Page access token used for every publish call, this is what we store, encrypted. */
   pageAccessToken: string
   /** The Instagram Business Account id that owns the connected Page. */
   igUserId: string
@@ -137,7 +137,7 @@ export async function publishInstagramReel(input: PublishInstagramReelInput): Pr
   })
   const creationId = createRes.data.id as string
 
-  // Instagram processes the uploaded video asynchronously — poll until it's ready to publish.
+  // Instagram processes the uploaded video asynchronously, poll until it's ready to publish.
   let status = 'IN_PROGRESS'
   for (let attempt = 0; attempt < 20 && status !== 'FINISHED'; attempt++) {
     await sleep(3000)

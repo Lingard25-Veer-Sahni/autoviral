@@ -86,7 +86,7 @@ export default function DashboardLayout() {
               <Zap className="h-4 w-4 text-yolk-500" />
               Credits
             </div>
-            <span className="font-display font-bold text-yolk-400">{profile?.credits ?? '—'}</span>
+            <span className="font-display font-bold text-yolk-400">{profile?.credits ?? ', '}</span>
           </div>
           <div className="flex items-center justify-between px-1">
             <div className="min-w-0">

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import type { AspectRatio } from './render.js'
 
-// Real Pixabay search — a second, fully-free stock media source layered
+// Real Pixabay search, a second, fully-free stock media source layered
 // alongside Pexels (imageSearch.ts / stockFootage.ts) purely to widen the
 // pool of real results per query, since Pexels alone sometimes has thin
 // coverage for a given keyword. Optional: no key means these functions

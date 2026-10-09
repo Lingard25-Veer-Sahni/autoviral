@@ -65,10 +65,10 @@ export function useVideos() {
 
 /**
  * System-generated in-app notifications (currently just the "your video
- * failed, credits refunded" message — see server/src/services/notifications.ts
+ * failed, credits refunded" message, see server/src/services/notifications.ts
  * and supabase/migrations/0005_notifications.sql). Reads straight from
  * Supabase like useVideos/useChannels above; RLS scopes rows to the
- * signed-in user, and there's deliberately no client-side insert path — only
+ * signed-in user, and there's deliberately no client-side insert path, only
  * the backend's service-role key can create a notification.
  */
 export function useNotifications() {
@@ -136,7 +136,7 @@ export function useSocialAccounts() {
   const refresh = useCallback(async () => {
     if (!user) return
     setLoading(true)
-    // Explicitly exclude access_token/refresh_token — never ship encrypted
+    // Explicitly exclude access_token/refresh_token, never ship encrypted
     // OAuth tokens to the browser, even though RLS already scopes rows to
     // their owner.
     const { data } = await supabase

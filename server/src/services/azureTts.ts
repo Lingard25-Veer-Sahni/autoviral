@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { writeFile } from 'node:fs/promises'
 
-// Real Azure Cognitive Services Neural TTS — genuinely more natural than the
+// Real Azure Cognitive Services Neural TTS, genuinely more natural than the
 // local macOS `say` voices (see render.ts's VOICE_PRESETS comment for that
 // engine's history). Optional: when AZURE_SPEECH_KEY/AZURE_SPEECH_REGION
 // aren't set, render.ts's synthesizeNarration() falls back to `say` so the
@@ -43,7 +43,7 @@ export async function synthesizeAzureNarration(text: string, voiceChoice: AzureV
     headers: {
       'Ocp-Apim-Subscription-Key': AZURE_SPEECH_KEY,
       'Content-Type': 'application/ssml+xml',
-      // 16-bit PCM WAV — matches what render.ts's `say` fallback produces, so
+      // 16-bit PCM WAV, matches what render.ts's `say` fallback produces, so
       // both engines are interchangeable everywhere audio duration is read
       // (afinfo) or composited (ffmpeg / Remotion's bundled ffmpeg).
       'X-Microsoft-OutputFormat': 'riff-24khz-16bit-mono-pcm',

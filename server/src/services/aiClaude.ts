@@ -8,7 +8,7 @@ const apiKey = process.env.ANTHROPIC_API_KEY
 export const claudeConfigured = Boolean(apiKey)
 
 if (!claudeConfigured) {
-  console.warn('[Autoviral server] ANTHROPIC_API_KEY is missing — this AI provider is unavailable.')
+  console.warn('[Autoviral server] ANTHROPIC_API_KEY is missing, this AI provider is unavailable.')
 }
 
 const anthropic = new Anthropic({ apiKey: apiKey || 'placeholder-key' })
@@ -18,7 +18,7 @@ const MODEL = 'claude-opus-4-7'
 /**
  * Real (non-mocked) script/title/description/hashtag generation via
  * Anthropic's API, using native structured outputs (`output_config.format`)
- * so the response is guaranteed to match `videoContentSchema` — no manual
+ * so the response is guaranteed to match `videoContentSchema`, no manual
  * JSON parsing needed.
  */
 export async function generateVideoContentClaude(

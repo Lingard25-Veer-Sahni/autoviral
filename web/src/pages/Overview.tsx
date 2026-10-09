@@ -61,7 +61,7 @@ export default function Overview() {
           </div>
           <div className="mt-4 space-y-3">
             {videos.length === 0 && (
-              <p className="py-8 text-center text-sm text-white/40">No videos yet — create your first one.</p>
+              <p className="py-8 text-center text-sm text-white/40">No videos yet, create your first one.</p>
             )}
             {videos.slice(0, 5).map((v) => (
               <div key={v.id} className="flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-3">

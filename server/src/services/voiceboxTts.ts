@@ -10,11 +10,11 @@ import ffmpegPath from 'ffmpeg-static'
 const execFileAsync = promisify(execFile)
 const FFMPEG_BIN = (ffmpegPath as unknown as string) || 'ffmpeg'
 
-// Voicebox (https://github.com/jamiepine/voicebox) — a self-hosted,
+// Voicebox (https://github.com/jamiepine/voicebox), a self-hosted,
 // open-source "AI voice studio" (Docker container, FastAPI backend) that
 // does real zero-shot voice cloning: give it a short reference audio sample
 // plus its transcript, and it can narrate arbitrary text back in that
-// cloned voice. This is NOT a hosted third-party API — VOICEBOX_URL just
+// cloned voice. This is NOT a hosted third-party API, VOICEBOX_URL just
 // points at wherever the user's own `docker compose up` instance is
 // listening (see SETUP.md), so there's no API key. Every route/field shape
 // used below was verified against Voicebox's actual FastAPI source
@@ -33,7 +33,7 @@ const client = axios.create({
 
 /** Pulls Voicebox's actual error body (FastAPI's {detail: ...} shape) out of
  * an axios error instead of surfacing axios's generic "Request failed with
- * status code N" — the real detail is what's actually useful for debugging
+ * status code N", the real detail is what's actually useful for debugging
  * (and for the user, when it's something actionable). */
 function voiceboxErrorMessage(err: unknown): string {
   if (axios.isAxiosError(err)) {
@@ -51,7 +51,7 @@ function voiceboxErrorMessage(err: unknown): string {
 }
 
 /**
- * POST /profiles — creates a new, initially sample-less cloned-voice
+ * POST /profiles, creates a new, initially sample-less cloned-voice
  * profile. Returns Voicebox's own profile id (VoiceProfileResponse.id),
  * which is what every later call (sample upload, /generate/stream,
  * deletion) addresses this voice by.
@@ -69,7 +69,7 @@ export async function createVoiceboxProfile(name: string): Promise<string> {
 }
 
 /**
- * POST /transcribe — runs Voicebox's bundled Whisper model on the uploaded
+ * POST /transcribe, runs Voicebox's bundled Whisper model on the uploaded
  * sample to get a REAL transcript. Voicebox's own POST
  * /profiles/{id}/samples requires a `reference_text` field verbatim
  * matching what's spoken in the sample; rather than asking the end user to
@@ -79,8 +79,7 @@ export async function createVoiceboxProfile(name: string): Promise<string> {
  *
  * The FIRST call against a fresh Voicebox instance (before its Whisper model
  * has been downloaded/loaded into memory) returns 202 with
- * `{message, model_name, downloading: true}` instead of the transcript —
- * confirmed against backend/routes/transcription.py. There's no job id or
+ * `{message, model_name, downloading: true}` instead of the transcript, * confirmed against backend/routes/transcription.py. There's no job id or
  * webhook, just "wait and try again", so this polls (rebuilding the
  * multipart body each attempt, since a FormData stream can only be sent
  * once) until either a real 200 or maxWaitMs is exceeded.
@@ -103,10 +102,10 @@ export async function transcribeVoiceboxSample(
         validateStatus: (status) => status === 200 || status === 202,
       })
       if (res.status === 200) return res.data.text
-      // 202 — model still downloading/loading. Wait and retry.
+      // 202, model still downloading/loading. Wait and retry.
       if (Date.now() - start > maxWaitMs) {
         throw new Error(
-          "Voicebox is still downloading its speech-recognition model (first-use only) and didn't finish in time — wait a minute and try again."
+          "Voicebox is still downloading its speech-recognition model (first-use only) and didn't finish in time, wait a minute and try again."
         )
       }
       await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -118,7 +117,7 @@ export async function transcribeVoiceboxSample(
 }
 
 /**
- * POST /profiles/{profile_id}/samples — attaches a reference audio sample
+ * POST /profiles/{profile_id}/samples, attaches a reference audio sample
  * (+ its real transcript from transcribeVoiceboxSample above) to a profile.
  * A profile needs at least one sample before /generate/stream can narrate
  * anything with it.
@@ -144,7 +143,7 @@ export async function uploadVoiceboxSample(
   }
 }
 
-/** DELETE /profiles/{profile_id} — removes the profile (and its samples) from Voicebox itself. */
+/** DELETE /profiles/{profile_id}, removes the profile (and its samples) from Voicebox itself. */
 export async function deleteVoiceboxProfile(profileId: string): Promise<void> {
   try {
     await client.delete(`/profiles/${encodeURIComponent(profileId)}`)
@@ -157,12 +156,12 @@ export async function deleteVoiceboxProfile(profileId: string): Promise<void> {
  * `POST /generate/stream` fails fast with a 400 (`ensure_model_cached_or_raise`
  * in Voicebox's own backend/backends/__init__.py) the first time a given TTS
  * model is used and hasn't been downloaded to disk yet, rather than
- * downloading it inline like `/transcribe` does for Whisper — its own error
+ * downloading it inline like `/transcribe` does for Whisper, its own error
  * message literally says "Use /generate to trigger a download" (the
  * *non*-streaming endpoint we don't use). Left unhandled, every narration
  * call for a fresh Voicebox install/model hits this, throws, and
  * render.ts's synthesizeNarration() catches it and silently falls back to
- * the default preset voice — which is exactly why a cloned voice can render
+ * the default preset voice, which is exactly why a cloned voice can render
  * as the generic AI voice with no visible error. Detects that specific
  * error and drives the download itself (mirrors the polling loop already in
  * transcribeVoiceboxSample above) before retrying once.
@@ -187,7 +186,7 @@ function isTransientVoiceboxError(err: unknown): boolean {
 // Matches what /generate/stream actually requests server-side when we don't
 // pass `engine`/`model_size` in the POST body (which we never do): Voicebox's
 // _resolve_generation_engine() defaults to engine "qwen", and stream_speech
-// defaults model_size to "1.7B" — i.e. the "qwen-tts-{size}" entry in
+// defaults model_size to "1.7B", i.e. the "qwen-tts-{size}" entry in
 // /models/status. Built from the size parsed out of the 400's error message
 // rather than hardcoded, so it still tracks correctly if Voicebox's own
 // default model_size ever changes.
@@ -212,14 +211,14 @@ async function ensureVoiceboxModelDownloaded(modelName: string, maxWaitMs = 15 *
   if (await isDownloaded()) return
 
   await client.post('/models/download', { model_name: modelName }).catch((err) => {
-    // A 409/"already downloading" here is fine — the poll loop below covers it either way.
+    // A 409/"already downloading" here is fine, the poll loop below covers it either way.
     if (!axios.isAxiosError(err) || err.response?.status !== 409) throw new Error(voiceboxErrorMessage(err))
   })
 
   for (;;) {
     if (Date.now() - start > maxWaitMs) {
       throw new Error(
-        `Voicebox is still downloading the ${modelName} model (first-use only, several GB) and didn't finish in time — wait a bit and try again.`
+        `Voicebox is still downloading the ${modelName} model (first-use only, several GB) and didn't finish in time, wait a bit and try again.`
       )
     }
     await new Promise((resolve) => setTimeout(resolve, 5000))
@@ -228,7 +227,7 @@ async function ensureVoiceboxModelDownloaded(modelName: string, maxWaitMs = 15 *
 }
 
 /**
- * POST /generate/stream — synchronously synthesizes `text` in the cloned
+ * POST /generate/stream, synchronously synthesizes `text` in the cloned
  * voice identified by `profileId` and streams back real WAV audio directly
  * (no generation-id polling needed, unlike Voicebox's async POST /generate).
  * Converts the result to the same 16-bit 24kHz mono PCM WAV shape every

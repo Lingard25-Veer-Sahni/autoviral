@@ -12,11 +12,11 @@ const router = Router()
 
 const VALID_ASPECTS = ['9:16', '1:1', '16:9']
 // Single source of truth is aiSchema.ts's TARGET_DURATION_PRESETS (which also
-// carries each tier's credit cost) — this just derives the list of valid keys.
+// carries each tier's credit cost), this just derives the list of valid keys.
 const VALID_DURATIONS = Object.keys(TARGET_DURATION_PRESETS)
 
 // Memory storage: a thumbnail image is only ever needed transiently to seed
-// a single render (see render.ts's renderThumbnailFromImage) — never
+// a single render (see render.ts's renderThumbnailFromImage), never
 // persisted to disk or Storage here, consistent with the rest of the
 // pipeline's ephemeral per-render assets.
 const upload = multer({
@@ -24,12 +24,12 @@ const upload = multer({
   limits: { fileSize: 15 * 1024 * 1024, files: 1 },
 })
 
-// POST /api/videos/generate — kicks off the real AI -> render -> upload pipeline.
+// POST /api/videos/generate, kicks off the real AI -> render -> upload pipeline.
 // Accepts either a plain JSON body (no thumbnail image picked, the default
 // shape) or a multipart/form-data body when a thumbnail file is uploaded
-// (under "thumbnailFile") — a picked-from-search thumbnail instead travels
+// (under "thumbnailFile"), a picked-from-search thumbnail instead travels
 // as a plain URL string ("thumbnailImageUrl") on either body shape.
-// `.fields()` only engages for multipart requests — a JSON request passes
+// `.fields()` only engages for multipart requests, a JSON request passes
 // straight through untouched.
 router.post(
   '/generate',
@@ -116,7 +116,7 @@ router.post(
   }
 })
 
-// POST /api/videos/:id/post — posts an already-rendered video to one or more connected platforms.
+// POST /api/videos/:id/post, posts an already-rendered video to one or more connected platforms.
 router.post('/:id/post', requireAuth, async (req: AuthedRequest, res) => {
   const { id } = req.params
   const platforms: Platform[] = Array.isArray(req.body?.platforms)
@@ -138,7 +138,7 @@ router.post('/:id/post', requireAuth, async (req: AuthedRequest, res) => {
     return res.status(404).json({ error: 'Video not found.' })
   }
   if (!video.video_url) {
-    return res.status(400).json({ error: 'This video is still generating — try again in a moment.' })
+    return res.status(400).json({ error: 'This video is still generating, try again in a moment.' })
   }
 
   const results: Record<string, { status: 'posted' | 'failed'; url?: string | null; error?: string }> = {}
@@ -209,7 +209,7 @@ router.post('/:id/schedule', requireAuth, async (req: AuthedRequest, res) => {
     return res.status(404).json({ error: 'Video not found.' })
   }
   if (!video.video_url) {
-    return res.status(400).json({ error: 'This video is still generating — try again in a moment.' })
+    return res.status(400).json({ error: 'This video is still generating, try again in a moment.' })
   }
 
   await supabaseAdmin

@@ -13,8 +13,7 @@ import { Logo } from '@/components/Logo'
 // before an account can be created.
 //
 // Note: this is a template intended to give broad practical protection, not
-// a substitute for review by a licensed attorney in your jurisdiction —
-// recommend having it reviewed once the business has real revenue/users.
+// a substitute for review by a licensed attorney in your jurisdiction, // recommend having it reviewed once the business has real revenue/users.
 export default function Terms() {
   return (
     <div className="mx-auto flex min-h-screen max-w-2xl flex-col px-6 py-16">
@@ -141,7 +140,7 @@ export default function Terms() {
           <section>
             <h2 className="text-xs font-medium text-white">10. Privacy: what we collect</h2>
             <p className="mt-1">
-              We collect: (a) account information you provide (name, email, password — password is hashed by our
+              We collect: (a) account information you provide (name, email, password, password is hashed by our
               authentication provider and never stored or visible to us in plain text); (b) content you generate or
               upload and associated metadata; (c) OAuth tokens for third-party platforms you connect, stored
               encrypted at rest; (d) payment metadata from our payment processor (we do not receive or store your
@@ -156,9 +155,9 @@ export default function Terms() {
               We use your data to operate, maintain, and improve the Service, process payments, communicate with you
               (including transactional emails about your account and generations), and comply with legal
               obligations. We share data with third-party service providers strictly as needed to operate the
-              Service — e.g. Supabase (database/authentication), Cloudflare R2 (file storage), payment processors
+              Service, e.g. Supabase (database/authentication), Cloudflare R2 (file storage), payment processors
               (Razorpay), AI providers (for script/voice generation), and email delivery providers (for
-              transactional email) — each bound by their own data-processing terms. We do not sell your personal
+              transactional email), each bound by their own data-processing terms. We do not sell your personal
               data to third parties.
             </p>
           </section>

@@ -13,7 +13,7 @@ import { voiceboxConfigured, synthesizeVoiceboxNarration } from './voiceboxTts.j
 const execFileAsync = promisify(execFile)
 
 // ffmpeg-static's type declares `string`, but resolves to `null` on unsupported
-// platforms at runtime — guard for that even though this project targets macOS dev.
+// platforms at runtime, guard for that even though this project targets macOS dev.
 export const FFMPEG_BIN = (ffmpegPath as unknown as string) || 'ffmpeg'
 
 export type AspectRatio = '9:16' | '1:1' | '16:9'
@@ -28,18 +28,17 @@ export const ASPECT_SIZES: Record<AspectRatio, { width: number; height: number }
 // Create Video / Autopilot forms. Each entry carries settings for BOTH
 // engines synthesizeNarration() can dispatch to:
 //  - azureVoice/azureRate: real Azure Neural TTS (genuinely natural,
-//    cloud-synthesized) — used whenever AZURE_SPEECH_KEY/AZURE_SPEECH_REGION
+//    cloud-synthesized), used whenever AZURE_SPEECH_KEY/AZURE_SPEECH_REGION
 //    are configured in server/.env. This is the primary/preferred engine.
 //  - voice/rate: macOS `say` fallback, used only when Azure isn't
 //    configured, so the app still works with zero external dependencies.
 //
 // IMPORTANT (say fallback only): `say -v <name>` does NOT error when
-// `<name>` isn't installed — it silently substitutes the system default
+// `<name>` isn't installed, it silently substitutes the system default
 // voice with zero indication. Verified directly on this machine: `say -v
 // "Ava" ...`, `say -v "Samantha" ...`, and even `say -v
 // "NotARealVoiceName123" ...` all produced byte-identical output. Every
-// voice name below was confirmed present via `say -v '?'` on this machine —
-// no silent fallbacks — and novelty/sound-effect voices are avoided
+// voice name below was confirmed present via `say -v '?'` on this machine, // no silent fallbacks, and novelty/sound-effect voices are avoided
 // entirely in favor of real, non-effects voices.
 const VOICE_PRESETS: Record<string, { voice: string; rate: number; azureVoice: string; azureRate: string }> = {
   energetic: { voice: 'Samantha', rate: 190, azureVoice: 'en-US-AriaNeural', azureRate: '+12%' },
@@ -65,7 +64,7 @@ export function pickVoice(voiceStyle?: string): VoiceChoice {
   return VOICE_PRESETS[key] || VOICE_PRESETS.default
 }
 
-// Brand palette — matches the web app's yellow/black theme.
+// Brand palette, matches the web app's yellow/black theme.
 export const BRAND = {
   black: '#0a0a0a',
   charcoal: '#141414',
@@ -383,7 +382,7 @@ async function extractVideoFrame(videoPath: string, atSeconds: number): Promise<
 /**
  * Builds the video's thumbnail by compositing the title over an actual frame
  * pulled from the rendered video itself (see extractVideoFrame above),
- * rather than a fully synthetic branded graphic — the thumbnail now visually
+ * rather than a fully synthetic branded graphic, the thumbnail now visually
  * matches what the video actually looks like, across all three render
  * engines (canvas/render.ts, stockRender.ts, remotionRender.ts all call this
  * with their own already-concatenated `finalPath`). Falls back to the old
@@ -418,17 +417,15 @@ export async function renderVideoThumbnail(
  * Real (non-mocked) narration synthesis.
  *
  * When `voiceProfileId` is set (a user picked one of their own cloned
- * voices — see voiceboxTts.ts / routes/voices.ts), Voicebox is tried FIRST,
+ * voices, see voiceboxTts.ts / routes/voices.ts), Voicebox is tried FIRST,
  * ahead of every preset engine below, since a specific custom voice was
  * explicitly requested. Any failure (Voicebox unreachable, profile not
  * ready, etc.) is caught and logged, then falls through to the normal
- * preset-voice chain below rather than failing the whole generation —
- * consistent with every other optional engine in this file.
+ * preset-voice chain below rather than failing the whole generation, * consistent with every other optional engine in this file.
  *
  * Preset-voice priority (used whenever no voiceProfileId is set, or as the
  * fallback above):
- *  1. ElevenLabs (most natural, but free-tier is time/character limited —
- *     see elevenLabsTts.ts). Any failure here (quota exhausted, trial
+ *  1. ElevenLabs (most natural, but free-tier is time/character limited, *     see elevenLabsTts.ts). Any failure here (quota exhausted, trial
  *     expired, network error) is caught and logged, then falls through to:
  *  2. Azure Neural TTS, when configured (genuinely natural cloud voices).
  *  3. The local macOS `say` engine, so the app always keeps working with
@@ -471,7 +468,7 @@ export async function synthesizeNarration(
     return
   }
   // `-r` (words per minute) is the one reliably-documented, empirically-verified lever
-  // for pacing on this limited legacy voice set — see VOICE_PRESETS' comment above.
+  // for pacing on this limited legacy voice set, see VOICE_PRESETS' comment above.
   await execFileAsync('say', [
     '-v', voiceChoice.voice,
     '-r', String(voiceChoice.rate),

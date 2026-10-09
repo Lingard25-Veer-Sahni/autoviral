@@ -26,7 +26,7 @@ app.use(cors({ origin: CLIENT_URL }))
 app.use(
   express.json({
     limit: '2mb',
-    // Stashes the exact raw bytes alongside the parsed body — the Razorpay
+    // Stashes the exact raw bytes alongside the parsed body, the Razorpay
     // webhook handler (routes/payments.ts) needs the untouched raw string to
     // verify its HMAC signature; re-serializing req.body would not
     // byte-for-byte match what Razorpay signed.
@@ -76,12 +76,12 @@ app.listen(PORT, () => {
   console.log(
     `[Autoviral server] Supabase: ${supabaseConfigured ? 'configured' : 'NOT configured'} · ` +
       `AI (${aiProvider}): ${aiConfigured ? 'configured' : 'NOT configured'} · ` +
-      `Stock footage (Pexels): ${pexelsConfigured ? 'configured' : 'NOT configured — using branded backgrounds only'} · ` +
+      `Stock footage (Pexels): ${pexelsConfigured ? 'configured' : 'NOT configured, using branded backgrounds only'} · ` +
       `YouTube: ${youtubeConfigured ? 'configured' : 'not configured'} · ` +
       `Instagram: ${instagramConfigured ? 'configured' : 'not configured'} · ` +
-      `Video storage (B2): ${b2Configured ? 'configured' : 'not configured — falling back to Supabase Storage (small files only)'} · ` +
+      `Video storage (B2): ${b2Configured ? 'configured' : 'not configured, falling back to Supabase Storage (small files only)'} · ` +
       `Narration (ElevenLabs): ${elevenLabsConfigured ? 'configured (primary, falls back to Azure/say on failure)' : 'not configured'} · ` +
-      `Custom cloned voices (Voicebox): ${voiceboxConfigured ? 'configured' : 'not configured — see SETUP.md to run it locally via Docker'}`
+      `Custom cloned voices (Voicebox): ${voiceboxConfigured ? 'configured' : 'not configured, see SETUP.md to run it locally via Docker'}`
   )
   startScheduler()
 })

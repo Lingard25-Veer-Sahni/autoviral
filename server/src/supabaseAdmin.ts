@@ -8,7 +8,7 @@ export const supabaseConfigured = Boolean(url && serviceKey)
 
 if (!supabaseConfigured) {
   console.warn(
-    '[Autoviral server] SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are missing from server/.env — ' +
+    '[Autoviral server] SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are missing from server/.env, ' +
       'database-backed routes will fail until configured. See SETUP.md.'
   )
 }

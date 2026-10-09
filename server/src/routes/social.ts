@@ -19,7 +19,7 @@ function isPlatform(value: unknown): value is 'youtube' | 'instagram' {
   return value === 'youtube' || value === 'instagram'
 }
 
-// GET /api/social/status — which platforms this user has connected. Used by Accounts.tsx.
+// GET /api/social/status, which platforms this user has connected. Used by Accounts.tsx.
 router.get('/status', requireAuth, async (req: AuthedRequest, res) => {
   const { data } = await supabaseAdmin
     .from('social_accounts')
@@ -34,7 +34,7 @@ router.get('/status', requireAuth, async (req: AuthedRequest, res) => {
   res.json(status)
 })
 
-// GET /api/social/:platform/oauth-url — kicks off the real OAuth dance.
+// GET /api/social/:platform/oauth-url, kicks off the real OAuth dance.
 router.get('/:platform/oauth-url', requireAuth, async (req: AuthedRequest, res) => {
   const { platform } = req.params
   if (!isPlatform(platform)) {
@@ -54,7 +54,7 @@ router.get('/:platform/oauth-url', requireAuth, async (req: AuthedRequest, res) 
   res.json({ configured: true, url })
 })
 
-// GET /api/social/:platform/callback — hit directly by Google/Meta's redirect (no auth header).
+// GET /api/social/:platform/callback, hit directly by Google/Meta's redirect (no auth header).
 router.get('/:platform/callback', async (req, res) => {
   const { platform } = req.params
   const { code, state, error: oauthError } = req.query as Record<string, string | undefined>

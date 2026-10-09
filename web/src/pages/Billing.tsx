@@ -9,7 +9,7 @@ import { TiltCard } from '@/components/TiltCard'
 import { formatDate } from '@/lib/utils'
 import type { CreditTransaction } from '@/types'
 
-// Mirrors server/src/routes/payments.ts's PACKS — the packId is what's sent
+// Mirrors server/src/routes/payments.ts's PACKS, the packId is what's sent
 // to the backend, which is the actual source of truth for price/credits (a
 // tampered client can't buy credits at a different price).
 const PACKS = [
@@ -65,7 +65,7 @@ export default function Billing() {
       const order = await api.createRazorpayOrder(pack.id)
 
       if (typeof window.Razorpay !== 'function') {
-        throw new Error('Payment widget failed to load — check your connection and try again.')
+        throw new Error('Payment widget failed to load, check your connection and try again.')
       }
 
       await new Promise<void>((resolve, reject) => {
@@ -92,11 +92,11 @@ export default function Billing() {
             }
           },
           modal: {
-            // User closed the widget without paying — not an error, just no-op.
+            // User closed the widget without paying, not an error, just no-op.
             ondismiss: () => resolve(),
           },
         })
-        // Declined card / bank rejection / etc. — Razorpay emits this
+        // Declined card / bank rejection / etc., Razorpay emits this
         // separately from the widget's own dismiss/handler flow.
         rz.on('payment.failed', (response) => {
           reject(new Error(response.error?.description || 'Payment failed.'))
@@ -115,7 +115,7 @@ export default function Billing() {
       <h1 className="flex items-center gap-3 font-display text-3xl font-bold text-white">
         <CreditCard className="h-7 w-7 text-yolk-500" /> Credits & Billing
       </h1>
-      <p className="mt-1 text-white/50">Credits scale with video length — 1 credit for a quick clip, more for longer videos. Buy more anytime.</p>
+      <p className="mt-1 text-white/50">Credits scale with video length, 1 credit for a quick clip, more for longer videos. Buy more anytime.</p>
 
       <Card className="mt-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -130,7 +130,7 @@ export default function Billing() {
 
       {razorpayConfigured === false && (
         <p className="mt-4 rounded-xl border border-yolk-500/30 bg-yolk-500/10 px-4 py-3 text-sm text-yolk-200">
-          Payments aren't configured yet — set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in server/.env (see SETUP.md).
+          Payments aren't configured yet, set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in server/.env (see SETUP.md).
         </p>
       )}
       {buyError && (

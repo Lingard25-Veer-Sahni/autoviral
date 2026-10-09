@@ -5,7 +5,7 @@ import { generateVideoContent } from '../services/ai.js'
 // calls (short vs long preset) and confirms the AI actually responds to the
 // scene-count/narration-length hint in the prompt, since that's the only
 // real lever available for steering final rendered duration (real per-scene
-// duration is TTS-audio-derived, not settable directly — see
+// duration is TTS-audio-derived, not settable directly, see
 // aiSchema.ts's TARGET_DURATION_PRESETS comment for the full rationale).
 // Run with: npx tsx src/scripts/smokeTestDuration.ts
 

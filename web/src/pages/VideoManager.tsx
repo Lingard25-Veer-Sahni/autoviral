@@ -105,7 +105,7 @@ export default function VideoManager() {
     if (!bulkScheduleAt || bulkBusy) return
     const targets = readySelectedVideos
     if (!targets.length) {
-      alert('None of the selected videos are ready to schedule yet — they are still generating.')
+      alert('None of the selected videos are ready to schedule yet, they are still generating.')
       return
     }
     const iso = new Date(bulkScheduleAt).toISOString()
@@ -130,7 +130,7 @@ export default function VideoManager() {
     if (!platforms.length || bulkBusy) return
     const targets = readySelectedVideos
     if (!targets.length) {
-      alert('None of the selected videos are ready to post yet — they are still generating.')
+      alert('None of the selected videos are ready to post yet, they are still generating.')
       return
     }
     setBulkBusy({ action: 'Posting', done: 0, total: targets.length })
@@ -158,7 +158,7 @@ export default function VideoManager() {
           <h1 className="flex items-center gap-3 font-display text-3xl font-bold text-white">
             <Clapperboard className="h-7 w-7 text-yolk-500" /> Video Manager
           </h1>
-          <p className="mt-1 text-white/50">Preview, edit, schedule, and post — with platform-specific formatting.</p>
+          <p className="mt-1 text-white/50">Preview, edit, schedule, and post, with platform-specific formatting.</p>
         </div>
         <Link to="/app/create"><Button><Sparkles className="h-4 w-4" /> New video</Button></Link>
       </div>

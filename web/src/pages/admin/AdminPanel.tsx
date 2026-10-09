@@ -106,7 +106,7 @@ export default function AdminPanel() {
                   return (
                     <tr key={u.id} className="border-b border-white/5 hover:bg-white/[0.02]">
                       <td className="px-4 py-3">
-                        <p className="font-medium text-white">{u.full_name || '—'}</p>
+                        <p className="font-medium text-white">{u.full_name || ', '}</p>
                         <p className="text-xs text-white/40">{u.email}</p>
                       </td>
                       <td className="px-4 py-3">

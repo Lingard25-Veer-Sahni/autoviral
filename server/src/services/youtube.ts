@@ -101,7 +101,7 @@ export async function uploadYoutubeShort(input: UploadYoutubeShortInput): Promis
         title: input.title.slice(0, 100),
         description: fullDescription.slice(0, 5000),
         tags: input.hashtags.slice(0, 15),
-        categoryId: '22', // People & Blogs — reasonable default for AI-generated shorts
+        categoryId: '22', // People & Blogs, reasonable default for AI-generated shorts
       },
       status: {
         privacyStatus: 'public',

@@ -20,7 +20,7 @@ async function main() {
     mode: 'manual',
   })
   const aiElapsed = ((Date.now() - t0) / 1000).toFixed(1)
-  console.log(`[smokeTestFullPipeline] AI generation done in ${aiElapsed}s — "${content.title}" (${content.script.length} scenes)`)
+  console.log(`[smokeTestFullPipeline] AI generation done in ${aiElapsed}s, "${content.title}" (${content.script.length} scenes)`)
 
   const t1 = Date.now()
   const result = await renderRemotionVideo({

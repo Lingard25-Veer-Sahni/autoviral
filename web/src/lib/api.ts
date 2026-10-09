@@ -24,7 +24,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 // Same shape as `request`, but for multipart/form-data bodies (a custom
 // thumbnail upload, which needs to ship real uploaded file bytes). Crucially
-// does NOT set Content-Type itself — the browser has to compute the
+// does NOT set Content-Type itself, the browser has to compute the
 // multipart boundary, which it only does when it owns that header.
 async function requestMultipart<T>(path: string, formData: FormData): Promise<T> {
   const headers: Record<string, string> = { ...(await authHeaders()) }
@@ -51,10 +51,10 @@ export interface GenerateVideoPayload {
   channelId?: string
   mode: 'autopilot' | 'manual'
   voiceStyle?: string
-  /** A user's own cloned voice (voice_profiles.id) — overrides voiceStyle's preset chain when set. */
+  /** A user's own cloned voice (voice_profiles.id), overrides voiceStyle's preset chain when set. */
   voiceProfileId?: string
   aspectRatio?: string
-  /** Target runtime preset — steers AI scene count/narration length, and determines the credits charged (see server's aiSchema.ts TARGET_DURATION_PRESETS). Real per-scene timing is TTS-audio-derived, so this isn't exact-second precision. */
+  /** Target runtime preset, steers AI scene count/narration length, and determines the credits charged (see server's aiSchema.ts TARGET_DURATION_PRESETS). Real per-scene timing is TTS-audio-derived, so this isn't exact-second precision. */
   targetDuration?: '10-30s' | '30-60s' | '60-90s'
   platforms?: string[]
   /** Full-resolution URL of a single image picked from the thumbnail search dropdown (fetched server-side). */
@@ -69,7 +69,7 @@ export interface VoiceProfile {
   status: 'pending' | 'ready' | 'failed'
   error_message: string | null
   sample_count: number
-  /** Whether this is the account-wide default voice — auto-used for narration in Create Video and Channel Autopilot. At most one true per user. */
+  /** Whether this is the account-wide default voice, auto-used for narration in Create Video and Channel Autopilot. At most one true per user. */
   is_default: boolean
   created_at: string
 }
@@ -150,7 +150,7 @@ export const api = {
   setDefaultVoice: (id: string) =>
     request<{ voiceProfile: VoiceProfile }>(`/api/voices/${id}/default`, { method: 'PATCH' }),
 
-  // Real Razorpay checkout (see server/src/routes/payments.ts) — replaces the
+  // Real Razorpay checkout (see server/src/routes/payments.ts), replaces the
   // old demo flow that granted credits with no payment processor at all.
   razorpayConfig: () =>
     request<{

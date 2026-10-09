@@ -2,8 +2,7 @@ import { z } from 'zod/v4'
 import type { GeneratedVideoContent } from '../types.js'
 
 // Shared across every AI provider (Kimi, Mistral, OpenRouter, ...) so the
-// schema, system prompt, and user-prompt construction only exist once —
-// provider modules (aiClaude.ts, aiOpenAICompatible.ts) just plug this into
+// schema, system prompt, and user-prompt construction only exist once, // provider modules (aiClaude.ts, aiOpenAICompatible.ts) just plug this into
 // whatever structured-output mechanism that provider's API offers.
 
 // A short video is broken into scenes. Each scene becomes one rendered frame
@@ -19,7 +18,7 @@ export const sceneSchema = z.object({
     .describe('Short (max ~8 words) bold text overlay to display on screen during this scene, for viewers watching muted.'),
   visual_prompt: z
     .string()
-    .describe('A vivid, concrete visual description of what this scene should look like — subject, setting, mood, color palette, camera framing. Used to art-direct the generated frame.'),
+    .describe('A vivid, concrete visual description of what this scene should look like, subject, setting, mood, color palette, camera framing. Used to art-direct the generated frame.'),
   duration_seconds: z
     .number()
     .min(2)
@@ -55,19 +54,19 @@ be generated automatically: a text-to-speech narrator reads the narration for ea
 frame is shown on screen, then all scenes are stitched together into one video.
 
 Rules for every script you write:
-- Hook the viewer in the first scene's first sentence — no slow intros.
+- Hook the viewer in the first scene's first sentence, no slow intros.
 - Keep narration conversational and easy to read aloud by a TTS engine: no special characters, no emoji, \
 no markdown, no parenthetical stage directions.
-- Hit the requested target video length below as closely as you can — do not default to a short script \
+- Hit the requested target video length below as closely as you can, do not default to a short script \
 when a longer one is requested, and do not pad a short request out with filler.
 - on_screen_text must be short and punchy, safe to render large on screen (max ~8 words).
 - visual_prompt should describe a single clear visual concept per scene (it is used to art-direct a \
-generated background frame, not a live-action shoot) — describe subject, setting, mood, and color palette.
+generated background frame, not a live-action shoot), describe subject, setting, mood, and color palette.
 - Titles must be scroll-stopping but not misleading clickbait, under 100 characters.
 - Descriptions should read naturally, end with a light call to action, and must NOT contain hashtags.
 - Hashtags should be lowercase, no # symbol, a realistic mix of broad + niche + branded tags.
 - If the user prompt lists topics/titles this channel has already covered, you MUST pick a genuinely \
-different topic, subtopic, or angle — never reuse or lightly reword one you were told to avoid. Repeating a \
+different topic, subtopic, or angle, never reuse or lightly reword one you were told to avoid. Repeating a \
 topic that was explicitly called out as already covered is a hard failure, not a style preference.
 
 Always produce output that matches the required JSON schema exactly.`
@@ -77,7 +76,7 @@ Always produce output that matches the required JSON schema exactly.`
 // a clean small whole-number credit cost. If you change this, also update
 // the Razorpay PACKS pricing in routes/payments.ts so credit packs are sold
 // at a rate that still covers this cost basis (they are NOT currently priced
-// consistently with this — see the comment there).
+// consistently with this, see the comment there).
 export const USD_PER_CREDIT = 0.1
 
 /**
@@ -85,13 +84,13 @@ export const USD_PER_CREDIT = 0.1
  * accounting for two real-world facts about this pipeline:
  *
  *  1. Generation failures still cost money (AI tokens + partial render time
- *     spent before failing) but earn nothing — refunded credits come out of
+ *     spent before failing) but earn nothing, refunded credits come out of
  *     the business's pocket, not the user's. Assuming roughly 1-in-2
  *     generations fails (see reconcileStuckVideos/refundCredit in
  *     videoPipeline.ts), the business must recoup TWO attempts' worth of
  *     cost for every ONE successful video sold. That's a 2x multiplier.
  *  2. On top of recouping that real (failure-adjusted) cost, margin must be
- *     2x the cost itself — i.e. the charge is cost + 2*cost = 3x the
+ *     2x the cost itself, i.e. the charge is cost + 2*cost = 3x the
  *     failure-adjusted cost.
  *
  * Combined: price = rawCost * 2 (failure) * 3 (cost + 2x profit) = rawCost * 6.
@@ -108,7 +107,7 @@ export type TargetDuration = '10-30s' | '30-60s' | '60-90s'
 
 export const DEFAULT_TARGET_DURATION: TargetDuration = '30-60s'
 
-// Capped at 90s max (see CreateVideo.tsx) — longer presets were removed
+// Capped at 90s max (see CreateVideo.tsx), longer presets were removed
 // because generation cost scales with length (more AI script tokens, more
 // TTS characters, bigger render/compositing time, bigger storage file), and
 // past ~90s the pay-per-use storage/compute cost stops being something a
@@ -119,13 +118,13 @@ export const DEFAULT_TARGET_DURATION: TargetDuration = '30-60s'
 // Real per-scene screen time is always driven by actual synthesized TTS
 // narration length (see remotionRender.ts/stockRender.ts/render.ts, which
 // each measure real audio via `getAudioDurationSeconds()`), never by the
-// AI's `duration_seconds` estimate — so the only two levers that actually
+// AI's `duration_seconds` estimate, so the only two levers that actually
 // change final video length are scene *count* and how much the AI writes
 // per scene's narration. This preset table steers both via the prompt.
 //
 // `credits` is what generating a video at that length actually costs the
 // user (see videoPipeline.ts's `initiateVideoGeneration`, the only place
-// this is charged/refunded), and is derived — not guessed — from
+// this is charged/refunded), and is derived, not guessed, from
 // `estimatedCostUsd` via `creditsForEstimatedCost()` below. See that
 // function for the full pricing formula (accounts for the ~50% generation
 // failure rate and a 2x profit margin on top of true cost).
@@ -141,8 +140,7 @@ export const TARGET_DURATION_PRESETS: Record<
      * AI script tokens (cheap pay-per-use OpenRouter model, see
      * OPENROUTER_MODEL in .env) + TTS + pay-per-use object storage (e.g.
      * Cloudflare R2, priced per GB actually stored/transferred, not a flat
-     * subscription) + a nominal render-compute slice. These are estimates —
-     * update them once real per-tier cost is measured in production, then
+     * subscription) + a nominal render-compute slice. These are estimates, * update them once real per-tier cost is measured in production, then
      * `credits` below (computed, not hardcoded) will automatically follow.
      */
     estimatedCostUsd: number
@@ -153,7 +151,7 @@ export const TARGET_DURATION_PRESETS: Record<
     label: '10–30 sec',
     sceneRange: '2-3 scenes',
     secondsHint: 'roughly 10-30 seconds total',
-    narrationHint: 'one short, punchy sentence of narration per scene — get straight to the point',
+    narrationHint: 'one short, punchy sentence of narration per scene, get straight to the point',
     estimatedCostUsd: 0.03,
     credits: creditsForEstimatedCost(0.03),
   },
@@ -175,7 +173,7 @@ export const TARGET_DURATION_PRESETS: Record<
   },
 }
 
-/** Real (non-simulated) cost lookup — the single source of truth `videoPipeline.ts` charges/refunds against. */
+/** Real (non-simulated) cost lookup, the single source of truth `videoPipeline.ts` charges/refunds against. */
 export function creditsCostForDuration(targetDuration?: TargetDuration): number {
   return TARGET_DURATION_PRESETS[targetDuration || DEFAULT_TARGET_DURATION].credits
 }
@@ -187,11 +185,11 @@ export interface GenerateVideoContentInput {
   voiceStyle?: string
   aspectRatio?: string
   platforms?: string[]
-  /** Approximate target runtime preset — steers scene count + narration length, since real duration is TTS-driven, not exact-second-settable. Defaults to DEFAULT_TARGET_DURATION when omitted. */
+  /** Approximate target runtime preset, steers scene count + narration length, since real duration is TTS-driven, not exact-second-settable. Defaults to DEFAULT_TARGET_DURATION when omitted. */
   targetDuration?: TargetDuration
-  /** Titles of this channel's most recent autopilot videos (newest first) — used to hard-block topic repeats across generations. Autopilot-only; omitted for manual one-off videos. */
+  /** Titles of this channel's most recent autopilot videos (newest first), used to hard-block topic repeats across generations. Autopilot-only; omitted for manual one-off videos. */
   recentTopics?: string[]
-  /** True for the account-holder's own admin account (profiles.role === 'admin') — routes OpenRouter generation to the free model instead of the paid one. See aiOpenAICompatible.ts's PROVIDERS.openrouter.freeModel. */
+  /** True for the account-holder's own admin account (profiles.role === 'admin'), routes OpenRouter generation to the free model instead of the paid one. See aiOpenAICompatible.ts's PROVIDERS.openrouter.freeModel. */
   isAdmin?: boolean
 }
 
@@ -211,12 +209,12 @@ niche (do not just restate the niche description) so repeated calls produce vari
     voiceStyle ? `Narration voice style: ${voiceStyle}.` : null,
     aspectRatio ? `Target aspect ratio: ${aspectRatio}.` : null,
     platforms && platforms.length ? `Target platform(s): ${platforms.join(', ')}.` : null,
-    `Target video length: ${duration.secondsHint} — write ${duration.sceneRange}, with ${duration.narrationHint}.`,
+    `Target video length: ${duration.secondsHint}, write ${duration.sceneRange}, with ${duration.narrationHint}.`,
   ].filter(Boolean)
 
   const avoidRepeatsBlock =
     recentTopics && recentTopics.length
-      ? `\n\nThis channel already has videos covering these exact topics/titles — you MUST NOT repeat any of \
+      ? `\n\nThis channel already has videos covering these exact topics/titles, you MUST NOT repeat any of \
 them or write something that's substantially the same angle. Pick a genuinely different topic, subtopic, or \
 angle within the niche instead:\n${recentTopics.map((t) => `- ${t}`).join('\n')}`
       : ''

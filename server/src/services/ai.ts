@@ -20,7 +20,7 @@ export type AiProvider = 'claude' | 'kimi' | 'mistral' | 'openrouter'
  * explicitly. Left unset, we auto-pick the best configured option: the
  * Anthropic-backed provider first (highest quality, what the product was
  * built and tuned against), then whichever free provider (Kimi, Mistral, or
- * OpenRouter) has an API key — for anyone who wants a genuinely
+ * OpenRouter) has an API key, for anyone who wants a genuinely
  * free/unlimited-trial path with no Anthropic billing at all. OpenRouter is
  * checked last in auto-detect since its free tier proxies to whatever
  * ":free" model is configured (see OPENROUTER_MODEL), which can vary in
@@ -35,7 +35,7 @@ function resolveProvider(): AiProvider {
   if (kimiConfigured) return 'kimi'
   if (mistralConfigured) return 'mistral'
   if (openrouterConfigured) return 'openrouter'
-  return 'claude' // no key configured for anything — surfaces a clear error below
+  return 'claude' // no key configured for anything, surfaces a clear error below
 }
 
 export const aiProvider: AiProvider = resolveProvider()
@@ -58,7 +58,7 @@ const PROVIDER_LABELS: Record<AiProvider, string> = {
 
 if (!aiConfigured) {
   console.warn(
-    `[Autoviral server] AI provider "${PROVIDER_LABELS[aiProvider]}" is missing its API key — AI generation ` +
+    `[Autoviral server] AI provider "${PROVIDER_LABELS[aiProvider]}" is missing its API key, AI generation ` +
       'routes will fail until configured. Set ANTHROPIC_API_KEY (AI), MOONSHOT_API_KEY (Kimi, free-tier ' +
       'friendly), MISTRAL_API_KEY (Mistral), or OPENROUTER_API_KEY (OpenRouter, free models available), and ' +
       'optionally AI_PROVIDER to pick which one is used.'

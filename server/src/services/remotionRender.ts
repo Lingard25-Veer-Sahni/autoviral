@@ -22,7 +22,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 // server/src/services/remotionRender.ts -> server/remotion/src/index.ts
 const REMOTION_ENTRY = path.resolve(__dirname, '../../remotion/src/index.ts')
 // Fixed publicDir the Remotion bundle is built against once and reused for
-// every render — per-render assets live in a unique subfolder underneath it
+// every render, per-render assets live in a unique subfolder underneath it
 // (see `renderRemotionVideo`) so we never have to re-bundle per video.
 const PUBLIC_DIR = path.resolve(__dirname, '../../remotion/public')
 
@@ -32,8 +32,8 @@ const COMPOSITION_ID = 'AutoviralVideo'
 // Mirrors `RemotionScene`/`RemotionVideoProps` in remotion/src/VideoComposition.tsx.
 // Kept as a separate, duplicated type here (rather than importing across the
 // server/remotion boundary) since the two are compiled by entirely different
-// toolchains — the server via tsc/tsx, the Remotion project via its own
-// webpack-based bundler — and only agree on this JSON-serializable shape.
+// toolchains, the server via tsc/tsx, the Remotion project via its own
+// webpack-based bundler, and only agree on this JSON-serializable shape.
 interface RemotionSceneInput {
   narrationFile: string
   durationInFrames: number
@@ -58,7 +58,7 @@ interface RemotionVideoInputProps {
   fps: number
   brandYellow: string
   // Remotion's `selectComposition`/`renderMedia` type inputProps as
-  // `Record<string, unknown>` — this index signature keeps the props object
+  // `Record<string, unknown>`, this index signature keeps the props object
   // assignable there while still catching typos on the named fields above.
   [key: string]: unknown
 }
@@ -88,7 +88,7 @@ export interface RenderRemotionVideoOutput {
   totalScenes: number
 }
 
-// Bundling is the slow part (webpack) — do it once per process and reuse the
+// Bundling is the slow part (webpack), do it once per process and reuse the
 // resulting serveUrl for every subsequent render, since PUBLIC_DIR itself
 // never changes (only its per-render subfolders do, at render time).
 //
@@ -128,7 +128,7 @@ async function getServeUrl(): Promise<string> {
     await mkdir(PUBLIC_DIR, { recursive: true })
     return bundle({ entryPoint: REMOTION_ENTRY, publicDir: PUBLIC_DIR, symlinkPublicDir: true })
   })().catch((err) => {
-    // Don't poison future calls with a rejected cached promise — let the next render retry the bundle.
+    // Don't poison future calls with a rejected cached promise, let the next render retry the bundle.
     bundlePromise = null
     throw err
   })
@@ -140,7 +140,7 @@ async function getServeUrl(): Promise<string> {
  * compositing: proper React-driven animated captions (spring entrance, not
  * a static PNG overlay), a real Ken Burns pan on fallback backgrounds, and
  * the same real TTS narration + real Pexels stock footage as
- * stockRender.ts — just composited by Remotion's headless-Chromium renderer
+ * stockRender.ts, just composited by Remotion's headless-Chromium renderer
  * instead of ffmpeg filter graphs.
  */
 export async function renderRemotionVideo(input: RenderRemotionVideoInput): Promise<RenderRemotionVideoOutput> {
@@ -233,7 +233,7 @@ export async function renderRemotionVideo(input: RenderRemotionVideoInput): Prom
     })
     // `composition.durationInFrames` comes from Root.tsx's `calculateMetadata`,
     // which already accounts for the cross-scene transition overlap (adjacent
-    // scenes overlap during their crossfade/slide/wipe) — more accurate than
+    // scenes overlap during their crossfade/slide/wipe), more accurate than
     // summing each scene's narration+padding duration independently.
     const totalDuration = composition.durationInFrames / FPS
 

@@ -11,7 +11,7 @@ import {
 
 const router = Router()
 
-// Server-side source of truth for what a pack costs / grants — the client
+// Server-side source of truth for what a pack costs / grants, the client
 // only ever sends a packId, never an amount, so a tampered request can't buy
 // credits at an arbitrary price. Mirrors web/src/pages/Billing.tsx's PACKS.
 export const PACKS: Record<string, { credits: number; price: number; label: string }> = {
@@ -23,13 +23,13 @@ export const PACKS: Record<string, { credits: number; price: number; label: stri
 const NOT_CONFIGURED_MESSAGE =
   'Payments are not configured: set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in server/.env (see SETUP.md).'
 
-// GET /api/payments/razorpay/config — lets the frontend know whether real
+// GET /api/payments/razorpay/config, lets the frontend know whether real
 // checkout is wired up, and hands over the (non-secret) pack catalogue.
 router.get('/razorpay/config', requireAuth, (_req, res) => {
   res.json({ configured: razorpayConfigured, currency: RAZORPAY_CURRENCY, packs: PACKS })
 })
 
-// POST /api/payments/razorpay/create-order — step 1 of checkout: creates a
+// POST /api/payments/razorpay/create-order, step 1 of checkout: creates a
 // real Razorpay order server-side so the amount can never be spoofed by the
 // client opening the Checkout widget.
 router.post('/razorpay/create-order', requireAuth, async (req: AuthedRequest, res) => {
@@ -41,7 +41,7 @@ router.post('/razorpay/create-order', requireAuth, async (req: AuthedRequest, re
   if (!pack) {
     return res.status(400).json({ error: 'Unknown credit pack.' })
   }
-  // Razorpay rejects orders under 100 paise — every current pack is well
+  // Razorpay rejects orders under 100 paise, every current pack is well
   // above that, but guard it explicitly so a future low-price pack fails
   // loudly here instead of as an opaque Razorpay API error.
   if (Math.round(pack.price * 100) < 100) {
@@ -57,17 +57,17 @@ router.post('/razorpay/create-order', requireAuth, async (req: AuthedRequest, re
   } catch (err) {
     console.error('[payments] failed to create Razorpay order:', err instanceof Error ? err.message : err)
     // Razorpay's SDK throws errors carrying the upstream HTTP status it got
-    // back (401 for bad/revoked API keys, etc.) — forward that distinction
+    // back (401 for bad/revoked API keys, etc.), forward that distinction
     // instead of collapsing everything into one generic response.
     const statusCode = (err as { statusCode?: number })?.statusCode
     if (statusCode === 401) {
-      return res.status(401).json({ error: 'Razorpay rejected our API credentials — check RAZORPAY_KEY_ID/SECRET.' })
+      return res.status(401).json({ error: 'Razorpay rejected our API credentials, check RAZORPAY_KEY_ID/SECRET.' })
     }
     res.status(500).json({ error: 'Could not start the payment. Please try again.' })
   }
 })
 
-// POST /api/payments/razorpay/verify — step 2: the client posts back what
+// POST /api/payments/razorpay/verify, step 2: the client posts back what
 // Razorpay Checkout returned on success. We independently re-verify the HMAC
 // signature (never trust the client's word that a payment succeeded) before
 // crediting the account, and de-dupe on the order id so a retried/duplicate
@@ -113,7 +113,7 @@ router.post('/razorpay/verify', requireAuth, async (req: AuthedRequest, res) => 
   })
   if (insertError) {
     console.error('[payments] payment verified but failed to record credit_transactions row:', insertError.message)
-    return res.status(500).json({ error: 'Payment succeeded but crediting your account failed — contact support.' })
+    return res.status(500).json({ error: 'Payment succeeded but crediting your account failed, contact support.' })
   }
 
   await supabaseAdmin
@@ -124,11 +124,11 @@ router.post('/razorpay/verify', requireAuth, async (req: AuthedRequest, res) => 
   res.json({ ok: true, creditsAdded: pack.credits })
 })
 
-// POST /api/payments/razorpay/webhook — async safety net (Razorpay dashboard
+// POST /api/payments/razorpay/webhook, async safety net (Razorpay dashboard
 // -> Settings -> Webhooks). The primary flow above already credits on the
 // client-verify step; this exists so a payment that succeeds but never makes
 // it back to the browser (closed tab, network drop) still gets logged.
-// Needs the raw request body for signature verification — see index.ts's
+// Needs the raw request body for signature verification, see index.ts's
 // express.json({ verify }) hook, which stashes it on req.rawBody.
 router.post('/razorpay/webhook', (req, res) => {
   const signature = req.header('x-razorpay-signature') || ''
@@ -142,7 +142,7 @@ router.post('/razorpay/webhook', (req, res) => {
   try {
     event = JSON.parse(rawBody)?.event || event
   } catch {
-    // ignore parse failure — signature already verified, just couldn't log the event name
+    // ignore parse failure, signature already verified, just couldn't log the event name
   }
   console.log(`[payments] razorpay webhook received: ${event}`)
   res.json({ ok: true })

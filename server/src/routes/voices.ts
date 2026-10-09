@@ -13,7 +13,7 @@ import {
 const router = Router()
 
 // Memory storage: the sample only ever needs to reach Voicebox (transcribed,
-// then uploaded as a profile sample) — never persisted to disk or Supabase
+// then uploaded as a profile sample), never persisted to disk or Supabase
 // Storage here, same ephemeral-asset pattern as the thumbnail upload in
 // routes/videos.ts.
 const upload = multer({
@@ -24,7 +24,7 @@ const upload = multer({
 const NOT_CONFIGURED_MESSAGE =
   'Custom cloned voices need Voicebox running locally (see SETUP.md) and VOICEBOX_URL set in server/.env.'
 
-// POST /api/voices — real (non-mocked) voice cloning: creates a Voicebox
+// POST /api/voices, real (non-mocked) voice cloning: creates a Voicebox
 // profile, runs Voicebox's own Whisper transcription on the uploaded sample
 // (rather than fabricating a transcript), then attaches the sample + that
 // real transcript to the profile so it's immediately usable for narration.
@@ -67,7 +67,7 @@ router.post('/', requireAuth, upload.single('file'), async (req: AuthedRequest, 
     .single()
 
   if (insertError || !row) {
-    // Best-effort cleanup — don't leave an orphaned profile on the Voicebox side.
+    // Best-effort cleanup, don't leave an orphaned profile on the Voicebox side.
     await deleteVoiceboxProfile(voiceboxProfileId).catch(() => {})
     return res.status(500).json({ error: insertError?.message || 'Failed to save the voice profile.' })
   }
@@ -92,7 +92,7 @@ router.post('/', requireAuth, upload.single('file'), async (req: AuthedRequest, 
   }
 })
 
-// GET /api/voices — list the current user's cloned voices (most recent first).
+// GET /api/voices, list the current user's cloned voices (most recent first).
 router.get('/', requireAuth, async (req: AuthedRequest, res) => {
   const { data, error } = await supabaseAdmin
     .from('voice_profiles')
@@ -106,13 +106,13 @@ router.get('/', requireAuth, async (req: AuthedRequest, res) => {
   res.json({ voiceProfiles: data || [], voiceboxConfigured })
 })
 
-// PATCH /api/voices/:id/default — marks this profile as the user's
+// PATCH /api/voices/:id/default, marks this profile as the user's
 // account-wide default voice (used automatically for narration in both the
-// manual Create Video flow and Channel Autopilot — see CreateVideo.tsx and
+// manual Create Video flow and Channel Autopilot, see CreateVideo.tsx and
 // scheduler.ts's runAutopilotTick()), clearing the flag off any previously
 // default profile first so `voice_profiles_one_default_per_user` (a partial
 // unique index on `is_default`, see 0006_voice_profile_default.sql) never
-// trips. Two sequential updates rather than one atomic statement — safe here
+// trips. Two sequential updates rather than one atomic statement, safe here
 // since this is a single-user, low-frequency action with no concurrent
 // writers to race against.
 router.patch('/:id/default', requireAuth, async (req: AuthedRequest, res) => {
@@ -148,7 +148,7 @@ router.patch('/:id/default', requireAuth, async (req: AuthedRequest, res) => {
   res.json({ voiceProfile: updated })
 })
 
-// DELETE /api/voices/:id — removes both our DB row and the underlying Voicebox profile.
+// DELETE /api/voices/:id, removes both our DB row and the underlying Voicebox profile.
 router.delete('/:id', requireAuth, async (req: AuthedRequest, res) => {
   const { id } = req.params
   const { data: row, error } = await supabaseAdmin

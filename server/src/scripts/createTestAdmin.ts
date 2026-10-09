@@ -3,7 +3,7 @@ import { randomBytes } from 'node:crypto'
 import { supabaseAdmin, supabaseConfigured } from '../supabaseAdmin.js'
 
 // One-off script: creates a real, working test admin account via Supabase's
-// Admin Auth API (service-role only — bypasses email confirmation), then
+// Admin Auth API (service-role only, bypasses email confirmation), then
 // promotes the resulting profiles row to role='admin'. Prints the generated
 // credentials so they can be handed to the user. Run with:
 //   npx tsx src/scripts/createTestAdmin.ts

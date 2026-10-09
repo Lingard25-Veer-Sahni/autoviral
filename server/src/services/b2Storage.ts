@@ -10,7 +10,7 @@ import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s
 // comfortably fits full-length renders. See services/storage.ts for the
 // routing logic between B2 and Supabase Storage.
 // Despite the "B2" naming (this started as a Backblaze-only integration),
-// this is a generic S3-compatible uploader — it also works unmodified with
+// this is a generic S3-compatible uploader, it also works unmodified with
 // Cloudflare R2 or any other S3-compatible provider, since they all speak
 // the same PutObject API. Only the env var names stayed B2-flavored.
 const ENDPOINT = process.env.B2_ENDPOINT?.trim() // e.g. "s3.us-west-004.backblazeb2.com" or "<account>.r2.cloudflarestorage.com"
@@ -18,7 +18,7 @@ const KEY_ID = process.env.B2_KEY_ID?.trim()
 const APPLICATION_KEY = process.env.B2_APPLICATION_KEY?.trim()
 const BUCKET_NAME = process.env.B2_BUCKET_NAME?.trim()
 // Optional override for the public URL base a browser/YouTube/Instagram can
-// actually fetch from — needed for R2, where the S3 endpoint itself isn't
+// actually fetch from, needed for R2, where the S3 endpoint itself isn't
 // public (R2 public access is a separate r2.dev subdomain or custom domain,
 // not "<bucket>.<endpoint>" like B2). Leave unset for B2, which does resolve
 // via that pattern. e.g. "https://pub-xxxxxxxx.r2.dev".

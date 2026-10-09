@@ -27,7 +27,7 @@ import { findStockClip, downloadStockClip } from './stockFootage.js'
 function renderCaptionOverlay(scene: VideoScriptScene, width: number, height: number): Buffer {
   const canvas = createCanvas(width, height)
   const ctx = canvas.getContext('2d')
-  // Fully transparent canvas — only the caption bar + text get painted.
+  // Fully transparent canvas, only the caption bar + text get painted.
   ctx.clearRect(0, 0, width, height)
 
   const maxWidth = width * 0.86

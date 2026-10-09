@@ -16,7 +16,7 @@ const SCRIPT_PATH = path.join(PYTHON_DIR, 'generate_clip.py')
 /**
  * True only if the local venv + script actually exist on disk. This is an
  * experimental, opt-in, macOS/Apple-Silicon-only path (AnimateDiff-Lightning +
- * Realistic Vision running on MPS) — never required for the app to function,
+ * Realistic Vision running on MPS), never required for the app to function,
  * and never selected automatically by the main pipeline.
  */
 export const localVideoGenAvailable = existsSync(PYTHON_BIN) && existsSync(SCRIPT_PATH)
@@ -39,7 +39,7 @@ export interface GenerateLocalClipResult {
 }
 
 // Local SD1.5-based generation is only tractable at modest resolutions on a
-// 16GB unified-memory Mac — square-ish sizes close to the model's native 512.
+// 16GB unified-memory Mac, square-ish sizes close to the model's native 512.
 const LOCAL_GEN_SIZE: Record<AspectRatio, { width: number; height: number }> = {
   '9:16': { width: 384, height: 640 },
   '1:1': { width: 512, height: 512 },
@@ -48,7 +48,7 @@ const LOCAL_GEN_SIZE: Record<AspectRatio, { width: number; height: number }> = {
 
 /**
  * Spawns the local Python worker to generate one short AI video clip entirely
- * on-device — no API key, no network call for inference (model weights are
+ * on-device, no API key, no network call for inference (model weights are
  * cached locally after first download), zero marginal cost.
  *
  * This is explicitly an experimental/secondary path (see SETUP.md): slower
@@ -85,8 +85,7 @@ export async function generateLocalClip(input: GenerateLocalClipInput): Promise<
     timeout: 30 * 60 * 1000,
     maxBuffer: 1024 * 1024 * 32,
   }).catch((err) => {
-    // execFile rejects with stdout/stderr attached even on non-zero exit —
-    // surface the Python script's own JSON error if it printed one.
+    // execFile rejects with stdout/stderr attached even on non-zero exit, // surface the Python script's own JSON error if it printed one.
     throw err
   })
 

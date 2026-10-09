@@ -21,12 +21,12 @@ const VOICES = ['energetic', 'calm', 'professional', 'comedic', 'inspirational']
 type DurationValue = '10-30s' | '30-60s' | '60-90s'
 
 // Real per-scene screen time is driven by actual narration audio length, not
-// an exact-second slider — so length is offered as presets that steer the AI
+// an exact-second slider, so length is offered as presets that steer the AI
 // script's scene count/narration length (see aiSchema.ts's TARGET_DURATION_PRESETS).
 // `credits` mirrors that same file's TARGET_DURATION_PRESETS costs so the
-// dropdown can show the real price up front — longer videos mean more AI
+// dropdown can show the real price up front, longer videos mean more AI
 // script tokens, more TTS narration, and more render time, so they cost more.
-// Capped at 90s max — see aiSchema.ts's TARGET_DURATION_PRESETS comment for why.
+// Capped at 90s max, see aiSchema.ts's TARGET_DURATION_PRESETS comment for why.
 const DURATIONS: { value: DurationValue; label: string; credits: number }[] = [
   { value: '10-30s', label: '10–30 sec', credits: 2 },
   { value: '30-60s', label: '30–60 sec', credits: 4 },
@@ -150,7 +150,7 @@ export default function CreateVideo() {
       setRecordSeconds(0)
       recordTimerRef.current = setInterval(() => setRecordSeconds((s) => s + 1), 1000)
     } catch {
-      setCloneError('Microphone access was denied or unavailable — allow mic access in your browser, or upload a file instead.')
+      setCloneError('Microphone access was denied or unavailable, allow mic access in your browser, or upload a file instead.')
     }
   }
 
@@ -305,7 +305,7 @@ export default function CreateVideo() {
       return
     }
     if (thumbnailMode === 'custom' && !thumbnailImage) {
-      setError('Search and select a thumbnail image, or upload one — or switch back to "Auto-generated".')
+      setError('Search and select a thumbnail image, or upload one, or switch back to "Auto-generated".')
       return
     }
     if (voiceMode === 'clone' && !selectedVoiceProfileId) {
@@ -380,7 +380,7 @@ export default function CreateVideo() {
               >
                 {DURATIONS.map((d) => (
                   <option key={d.value} value={d.value} className="bg-ink-900 text-white">
-                    {d.label} — {d.credits} credit{d.credits === 1 ? '' : 's'}
+                    {d.label}, {d.credits} credit{d.credits === 1 ? '' : 's'}
                   </option>
                 ))}
               </select>
@@ -453,7 +453,7 @@ export default function CreateVideo() {
               <div className="mt-4 space-y-4 rounded-xl border border-white/10 bg-white/[0.02] p-4">
                 {!voiceboxAvailable && (
                   <p className="rounded-lg bg-yolk-500/10 p-3 text-xs text-yolk-500">
-                    Voice cloning isn't set up on this server yet (Voicebox isn't configured/running — see SETUP.md). Uploads will fail until it is.
+                    Voice cloning isn't set up on this server yet (Voicebox isn't configured/running, see SETUP.md). Uploads will fail until it is.
                   </p>
                 )}
                 <p className="text-xs text-white/40">
@@ -651,7 +651,7 @@ export default function CreateVideo() {
             {thumbnailMode === 'custom' && (
               <div className="mt-4 space-y-4 rounded-xl border border-white/10 bg-white/[0.02] p-4">
                 <p className="text-xs text-white/40">
-                  Pick a background image (search or upload) — the AI-generated title gets composited on top of it.
+                  Pick a background image (search or upload), the AI-generated title gets composited on top of it.
                 </p>
 
                 <div>

@@ -104,7 +104,7 @@ export default function Onboarding() {
                   >
                     <Wand2 className="h-6 w-6 text-yolk-500" />
                     <h3 className="mt-3 font-display font-semibold text-white">Channel Autopilot</h3>
-                    <p className="mt-1 text-xs text-white/60">Describe your niche once — a new video is generated & queued every day.</p>
+                    <p className="mt-1 text-xs text-white/60">Describe your niche once, a new video is generated & queued every day.</p>
                   </button>
                   <button
                     onClick={() => setMode('manual')}
@@ -151,7 +151,7 @@ export default function Onboarding() {
                         value={videosPerDay}
                         onChange={(e) => setVideosPerDay(Number(e.target.value))}
                       />
-                      <p className="mt-1 text-xs text-white/40">Limited by your available credits — cost per video depends on its length.</p>
+                      <p className="mt-1 text-xs text-white/40">Limited by your available credits, cost per video depends on its length.</p>
                     </div>
                   )}
                 </div>

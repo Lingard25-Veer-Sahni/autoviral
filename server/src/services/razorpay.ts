@@ -3,14 +3,14 @@ import crypto from 'node:crypto'
 import 'dotenv/config'
 
 // Real (non-mocked) Razorpay integration for the credit-pack checkout in
-// web/src/pages/Billing.tsx — replaces the previous demo flow that granted
+// web/src/pages/Billing.tsx, replaces the previous demo flow that granted
 // credits directly with no payment processor involved at all.
 
 export const razorpayConfigured = Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET)
 
 // Smallest-unit currency Razorpay charges in. Most Razorpay accounts are
 // INR-only unless international payments have been explicitly enabled on the
-// dashboard — override via RAZORPAY_CURRENCY if yours supports USD directly.
+// dashboard, override via RAZORPAY_CURRENCY if yours supports USD directly.
 export const RAZORPAY_CURRENCY = process.env.RAZORPAY_CURRENCY || 'INR'
 
 let client: Razorpay | null = null
@@ -36,8 +36,7 @@ export interface CreateOrderResult {
 }
 
 /**
- * Creates a Razorpay order for `amountMajorUnits` (e.g. 19 for ₹19/$19) —
- * Razorpay's API wants the smallest currency unit (paise for INR, cents for
+ * Creates a Razorpay order for `amountMajorUnits` (e.g. 19 for ₹19/$19), * Razorpay's API wants the smallest currency unit (paise for INR, cents for
  * USD), so this multiplies by 100 for the caller.
  */
 export async function createRazorpayOrder(
@@ -63,7 +62,7 @@ export async function createRazorpayOrder(
  * Verifies the razorpay_order_id/razorpay_payment_id/razorpay_signature
  * triplet the client gets back from Razorpay's Checkout widget on success,
  * per Razorpay's documented HMAC-SHA256(order_id + "|" + payment_id) scheme.
- * NEVER credit an account without this passing — the three values are
+ * NEVER credit an account without this passing, the three values are
  * client-controlled and easy to forge without it.
  */
 export function verifyRazorpayPaymentSignature(orderId: string, paymentId: string, signature: string): boolean {
@@ -77,7 +76,7 @@ export function verifyRazorpayPaymentSignature(orderId: string, paymentId: strin
 
 /**
  * Verifies an async webhook delivery (Razorpay dashboard -> Settings ->
- * Webhooks) against RAZORPAY_WEBHOOK_SECRET — a separate secret from the
+ * Webhooks) against RAZORPAY_WEBHOOK_SECRET, a separate secret from the
  * API key pair, configured when the webhook endpoint is registered.
  */
 export function verifyRazorpayWebhookSignature(rawBody: string, signature: string): boolean {

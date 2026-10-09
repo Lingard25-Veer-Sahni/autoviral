@@ -4,7 +4,7 @@ import { searchImages, imageSearchConfigured } from '../services/imageSearch.js'
 
 const router = Router()
 
-// GET /api/media/image-search?query=...&perPage=... — backs the image-mode
+// GET /api/media/image-search?query=...&perPage=..., backs the image-mode
 // "search for an image" dropdown in Create Video. Real Pexels Photos search,
 // server-side (keeps the API key off the client), auth-gated like every
 // other endpoint that does real work on the user's behalf.

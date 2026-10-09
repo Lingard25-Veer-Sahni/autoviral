@@ -11,7 +11,7 @@ function NotificationIcon({ type }: { type: AppNotification['type'] }) {
 }
 
 /**
- * Bell icon + dropdown for in-app notifications — currently only fires for
+ * Bell icon + dropdown for in-app notifications, currently only fires for
  * "your video failed, credits refunded" (see server/src/services/videoPipeline.ts),
  * but built generically since useNotifications() is type-agnostic.
  */

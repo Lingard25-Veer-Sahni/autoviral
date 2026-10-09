@@ -3,7 +3,7 @@ import { writeFile } from 'node:fs/promises'
 import { renderRemotionVideo } from '../services/remotionRender.js'
 import type { GeneratedVideoContent } from '../types.js'
 
-// One-off smoke test for the Remotion render bridge — not part of the app,
+// One-off smoke test for the Remotion render bridge, not part of the app,
 // just a fast way to confirm bundling + headless Chromium + narration +
 // fallback-background compositing all work end to end on this machine.
 // Run with: npx tsx src/scripts/smokeTestRemotion.ts

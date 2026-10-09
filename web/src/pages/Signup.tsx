@@ -56,7 +56,7 @@ export default function Signup() {
           {!supabaseConfigured && (
             <div className="mt-4 flex items-start gap-2 rounded-xl border border-yolk-500/30 bg-yolk-500/10 p-3 text-xs text-yolk-300">
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-              Supabase isn't configured yet — add your project URL/anon key to{' '}
+              Supabase isn't configured yet, add your project URL/anon key to{' '}
               <code className="rounded bg-black/30 px-1">web/.env.local</code> to enable signup.
             </div>
           )}

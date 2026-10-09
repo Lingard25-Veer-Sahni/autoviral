@@ -35,7 +35,7 @@ function HeroPhone({ video, rotate }: { video: (typeof HERO_VIDEOS)[number]; rot
     const el = videoRef.current
     if (!el) return
     if (!playingAudio) {
-      // Pause any other hero video's audio by muting this one only — simplest
+      // Pause any other hero video's audio by muting this one only, simplest
       // behavior: unmute + play this video with sound, keep others muted.
       el.muted = false
       el.currentTime = 0
@@ -141,8 +141,7 @@ export default function Landing() {
         </Reveal>
         <Reveal delay={0.1}>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-white/60">
-            Autoviral writes, voices, edits, and thumbnails a brand-new video every single day —
-            then posts it straight to Instagram and YouTube. Or hand-craft each video yourself.
+            Autoviral writes, voices, edits, and thumbnails a brand-new video every single day, then posts it straight to Instagram and YouTube. Or hand-craft each video yourself.
             Either way, you never touch an editing timeline again.
           </p>
         </Reveal>
@@ -188,7 +187,7 @@ export default function Landing() {
                 <h3 className="font-display text-xl font-semibold text-white">Channel Autopilot</h3>
                 <p className="mt-2 text-sm text-white/60">
                   Describe your niche once. Autoviral generates a full script, realistic voiceover,
-                  edited video, thumbnail, title and description — then posts a fresh video every day,
+                  edited video, thumbnail, title and description, then posts a fresh video every day,
                   automatically, based on your credit plan.
                 </p>
                 <ul className="mt-5 space-y-2 text-sm text-white/70">
@@ -211,7 +210,7 @@ export default function Landing() {
                 <h3 className="font-display text-xl font-semibold text-white">Video-by-Video</h3>
                 <p className="mt-2 text-sm text-white/60">
                   Have a specific idea? Describe that single video and Autoviral builds it exactly to
-                  spec — script, audio, visuals, thumbnail, and metadata — ready for your approval.
+                  spec, script, audio, visuals, thumbnail, and metadata, ready for your approval.
                 </p>
                 <ul className="mt-5 space-y-2 text-sm text-white/70">
                   {['Full creative control per video', 'Great for launches & one-offs', 'Same AI pipeline, on demand'].map((f) => (
@@ -255,7 +254,7 @@ export default function Landing() {
       <section id="pricing" className="mx-auto max-w-6xl px-6 py-24">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold text-white md:text-4xl">Pay for videos, not seats</h2>
-          <p className="mt-3 text-white/60">Credits scale with video length — short clips cost less, longer videos cost more. Buy a credit pack, use it whenever.</p>
+          <p className="mt-3 text-white/60">Credits scale with video length, short clips cost less, longer videos cost more. Buy a credit pack, use it whenever.</p>
         </Reveal>
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {[

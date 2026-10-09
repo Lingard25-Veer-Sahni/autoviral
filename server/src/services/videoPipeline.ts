@@ -13,7 +13,7 @@ import type { GeneratedVideoContent } from '../types.js'
 type ProgressReporter = (fraction: number, label: string) => void | Promise<void>
 
 // Which rendering engine actually produces the .mp4: "stock" (default, ffmpeg
-// filter-graph compositing — battle-tested, no headless-Chromium dependency),
+// filter-graph compositing, battle-tested, no headless-Chromium dependency),
 // "remotion" (real React-driven animated captions + Ken Burns pans, rendered
 // via @remotion/renderer's headless Chromium), or "canvas" (the original
 // fully-synthetic branded-background fallback). Set RENDER_ENGINE in
@@ -113,10 +113,10 @@ export interface GenerateVideoParams {
   mode: 'autopilot' | 'manual'
   prompt: string
   voiceStyle?: string
-  /** A user's own cloned voice — our `voice_profiles.id`, resolved to Voicebox's own profile id inside runGenerationPipeline right before rendering. Overrides voiceStyle's preset chain when set and ready. */
+  /** A user's own cloned voice, our `voice_profiles.id`, resolved to Voicebox's own profile id inside runGenerationPipeline right before rendering. Overrides voiceStyle's preset chain when set and ready. */
   voiceProfileId?: string | null
   aspectRatio?: AspectRatio
-  /** Target runtime preset (e.g. '30-60s', '5-10m') — steers the AI script's scene count/narration length, and directly determines the credits charged (see aiSchema.ts's TARGET_DURATION_PRESETS). Real per-scene timing is always TTS-audio-derived, not exact-second-settable. Defaults to DEFAULT_TARGET_DURATION. */
+  /** Target runtime preset (e.g. '30-60s', '5-10m'), steers the AI script's scene count/narration length, and directly determines the credits charged (see aiSchema.ts's TARGET_DURATION_PRESETS). Real per-scene timing is always TTS-audio-derived, not exact-second-settable. Defaults to DEFAULT_TARGET_DURATION. */
   targetDuration?: TargetDuration
   /** Platforms the finished video should be queued up to post to (from the create form / channel config). */
   platforms?: string[]
@@ -128,7 +128,7 @@ export interface GenerateVideoParams {
    * engine actually rendered the video itself.
    */
   thumbnailImage?: { buffer: Buffer; mimeType: string }
-  /** Resolved inside initiateVideoGeneration from profiles.role — never set by callers. True exempts this generation from the credit charge and routes AI script generation to the free model instead of the paid one. */
+  /** Resolved inside initiateVideoGeneration from profiles.role, never set by callers. True exempts this generation from the credit charge and routes AI script generation to the free model instead of the paid one. */
   isAdmin?: boolean
 }
 
@@ -143,9 +143,8 @@ export interface GenerateVideoParams {
 export async function initiateVideoGeneration(params: GenerateVideoParams) {
   // Real (non-flat) cost: longer target-duration presets mean more scenes,
   // more AI script tokens, more TTS characters synthesized, and more render
-  // time — see aiSchema.ts's TARGET_DURATION_PRESETS for the full pricing
-  // rationale. This is the one place that cost is charged (never refunded —
-  // see the no-refund policy in notifications.ts).
+  // time, see aiSchema.ts's TARGET_DURATION_PRESETS for the full pricing
+  // rationale. This is the one place that cost is charged (never refunded, // see the no-refund policy in notifications.ts).
   const creditsCost = creditsCostForDuration(params.targetDuration)
 
   const { data: profile, error: profileError } = await supabaseAdmin
@@ -263,7 +262,7 @@ const STORAGE_CLEANUP_AUTO_AT = 15
  *    (storage file + DB row) to free up space, then notifies the user that
  *    it did so. Counter resets to 0 immediately after.
  *
- * Never throws — callers treat this as fire-and-forget housekeeping that
+ * Never throws, callers treat this as fire-and-forget housekeeping that
  * must not affect the generation that just succeeded.
  */
 async function maybeRunStorageCleanup(userId: string): Promise<void> {
@@ -312,7 +311,7 @@ async function maybeRunStorageCleanup(userId: string): Promise<void> {
     await notifyUser(userId, {
       type: 'info',
       title: 'Update your storage',
-      message: `You've generated ${STORAGE_CLEANUP_NUDGE_AT} videos since your last cleanup. Delete some old videos you no longer need to free up space — otherwise we'll automatically remove your oldest ${STORAGE_CLEANUP_BATCH_SIZE} videos after ${STORAGE_CLEANUP_AUTO_AT}.`,
+      message: `You've generated ${STORAGE_CLEANUP_NUDGE_AT} videos since your last cleanup. Delete some old videos you no longer need to free up space, otherwise we'll automatically remove your oldest ${STORAGE_CLEANUP_BATCH_SIZE} videos after ${STORAGE_CLEANUP_AUTO_AT}.`,
     })
   }
 }
@@ -320,7 +319,7 @@ async function maybeRunStorageCleanup(userId: string): Promise<void> {
 // A video stuck in "generating" past this many minutes is treated as
 // orphaned. This pipeline runs runGenerationPipeline() fire-and-forget
 // in-process (see initiateVideoGeneration above) with no job queue or
-// checkpointing — if the server process dies mid-render (crash, deploy, or a
+// checkpointing, if the server process dies mid-render (crash, deploy, or a
 // dev restart from `tsx watch` picking up a file save) the in-flight promise
 // is killed outright and never reaches the try/catch that would normally
 // mark the row 'failed' and refund credits. The row is left at whatever
@@ -353,14 +352,14 @@ export async function reconcileStuckVideos(): Promise<void> {
 
   for (const video of stuck) {
     console.error(
-      `[pipeline] video ${video.id}: stuck in "generating" since ${video.created_at} — marking failed (no refund, per no-refund policy).`
+      `[pipeline] video ${video.id}: stuck in "generating" since ${video.created_at}, marking failed (no refund, per no-refund policy).`
     )
     await supabaseAdmin
       .from('videos')
       .update({
         status: 'failed',
         error_message:
-          'Generation was interrupted (the server restarted mid-render). Per our Terms & Conditions, credits spent on a failed generation are not refunded — please try again.',
+          'Generation was interrupted (the server restarted mid-render). Per our Terms & Conditions, credits spent on a failed generation are not refunded, please try again.',
       })
       .eq('id', video.id)
     const { title, message } = videoFailedNotification('the server restarted mid-render and generation was interrupted.')
@@ -372,7 +371,7 @@ export async function reconcileStuckVideos(): Promise<void> {
  * The default engine: real stock-footage compositing (genuine filmed
  * footage, not synthetic backgrounds). Falls back to the fully-synthetic
  * canvas renderer only if the stock pipeline itself throws (e.g. ffmpeg
- * failure unrelated to footage availability) — per-scene "no clip found"
+ * failure unrelated to footage availability), per-scene "no clip found"
  * cases are already handled inside renderStockVideo via a branded background.
  */
 async function renderStockVideoWithCanvasFallback(
@@ -392,7 +391,7 @@ async function renderStockVideoWithCanvasFallback(
     })
     if (!pexelsConfigured) {
       console.warn(
-        `[pipeline] video ${videoId}: PEXELS_API_KEY not set — rendered with branded backgrounds only (no real stock footage). Add a free key at pexels.com/api for real footage.`
+        `[pipeline] video ${videoId}: PEXELS_API_KEY not set, rendered with branded backgrounds only (no real stock footage). Add a free key at pexels.com/api for real footage.`
       )
     } else {
       console.log(`[pipeline] video ${videoId}: ${result.stockFootageScenes}/${result.totalScenes} scenes used real stock footage.`)
@@ -493,17 +492,17 @@ export async function runGenerationPipeline(videoId: string, params: GenerateVid
         voiceboxProfileId = voiceProfile.voicebox_profile_id
       } else {
         console.warn(
-          `[pipeline] video ${videoId}: requested cloned voice ${params.voiceProfileId} is missing or not ready — using the default voice instead.`
+          `[pipeline] video ${videoId}: requested cloned voice ${params.voiceProfileId} is missing or not ready, using the default voice instead.`
         )
       }
     }
 
-    // Primary path (RENDER_ENGINE=remotion): real Remotion rendering — same
+    // Primary path (RENDER_ENGINE=remotion): real Remotion rendering, same
     // real narration + real Pexels/Pixabay stock footage as the ffmpeg path
     // below, but with genuinely animated (spring-physics) captions and Ken
     // Burns pans, composited by headless Chromium instead of ffmpeg filter
     // graphs. Falls back to the ffmpeg stock-footage engine, then the
-    // fully-synthetic canvas engine, if a given stage throws — a video
+    // fully-synthetic canvas engine, if a given stage throws, a video
     // generation should degrade in quality before it fails outright.
     let rendered: { videoBuffer: Buffer; thumbnailBuffer: Buffer; durationSeconds: number }
     if (RENDER_ENGINE === 'remotion') {
@@ -575,7 +574,7 @@ export async function runGenerationPipeline(videoId: string, params: GenerateVid
       })
       .eq('id', videoId)
     // Note: `channels.last_generated_at` for autopilot pacing is stamped by the
-    // scheduler at trigger time (see services/scheduler.ts), not here — that
+    // scheduler at trigger time (see services/scheduler.ts), not here, that
     // prevents the cron tick from re-triggering the same channel while a
     // single generation is still in flight.
 
@@ -589,7 +588,7 @@ export async function runGenerationPipeline(videoId: string, params: GenerateVid
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error during video generation.'
     await supabaseAdmin.from('videos').update({ status: 'failed', error_message: message }).eq('id', videoId)
-    // No refund on failure — see the no-refund policy in notifications.ts's
+    // No refund on failure, see the no-refund policy in notifications.ts's
     // videoFailedNotification and aiSchema.ts's pricing formula, which
     // already assumes ~50% of attempts fail and prices accordingly.
     const { title, message: notifyMessage } = videoFailedNotification(message)

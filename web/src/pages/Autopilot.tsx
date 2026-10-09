@@ -14,7 +14,7 @@ import type { AspectRatio, Platform } from '@/types'
 
 // Autopilot never sets an explicit targetDuration, so every autopilot-generated
 // video is billed at the server's DEFAULT_TARGET_DURATION rate ('30-60s' = 4
-// credits — see server/src/services/aiSchema.ts's TARGET_DURATION_PRESETS).
+// credits, see server/src/services/aiSchema.ts's TARGET_DURATION_PRESETS).
 // Keep this in sync if that default ever changes.
 const AUTOPILOT_CREDITS_PER_VIDEO = 4
 
@@ -77,8 +77,7 @@ export default function Autopilot() {
       if (channel) {
         // mode is set explicitly here (even though this is presumably already an
         // autopilot channel) because the Autopilot page is the only screen that can
-        // ever flip a channel created as "manual" during onboarding into autopilot —
-        // without this, saving here could never actually turn autopilot on.
+        // ever flip a channel created as "manual" during onboarding into autopilot, // without this, saving here could never actually turn autopilot on.
         const { error } = await supabase
           .from('channels')
           .update({
@@ -121,7 +120,7 @@ export default function Autopilot() {
   }
 
   // voiceProfileId/aspectRatio are deliberately omitted from both generate
-  // calls below — the backend auto-resolves the account's default cloned
+  // calls below, the backend auto-resolves the account's default cloned
   // voice and the channel's next aspect-ratio-mix size for autopilot mode
   // (see server/src/services/videoPipeline.ts's initiateVideoGeneration).
   async function generateNow() {
@@ -171,7 +170,7 @@ export default function Autopilot() {
     await refreshProfile()
     setGeneratingAll(null)
     if (failures > 0) {
-      alert(`${total - failures}/${total} videos started. ${failures} failed (often low credits) — check Videos for details.`)
+      alert(`${total - failures}/${total} videos started. ${failures} failed (often low credits), check Videos for details.`)
     }
   }
 

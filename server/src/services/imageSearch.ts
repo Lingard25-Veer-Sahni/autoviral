@@ -2,7 +2,7 @@ import axios from 'axios'
 import { searchPixabayImages } from './pixabay.js'
 
 // Real Pexels Photos search (distinct from stockFootage.ts, which only hits
-// Pexels' *video* search endpoint) — backs the thumbnail image search
+// Pexels' *video* search endpoint), backs the thumbnail image search
 // dropdown. Same free API key (PEXELS_API_KEY), different base path.
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY || ''
 
@@ -73,8 +73,8 @@ async function searchPexelsImages(query: string, perPage: number): Promise<Image
 
 /**
  * Searches Pexels' and Pixabay's free stock photo libraries and merges the
- * results (Pexels first, then Pixabay) — two independent free sources give
- * meaningfully more variety per query than either alone. Never throws — a
+ * results (Pexels first, then Pixabay), two independent free sources give
+ * meaningfully more variety per query than either alone. Never throws, a
  * key missing or an API error on one source just means fewer merged
  * results, not a hard failure.
  */

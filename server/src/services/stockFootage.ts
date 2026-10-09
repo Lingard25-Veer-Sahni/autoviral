@@ -54,7 +54,7 @@ export function buildSearchQuery(visualPrompt: string): string {
     .split(/\s+/)
     .filter((w) => w.length > 2 && !STOPWORDS.has(w))
 
-  // Keep it short — Pexels' relevance ranking degrades with long, sentence-like queries.
+  // Keep it short, Pexels' relevance ranking degrades with long, sentence-like queries.
   const keywords = words.slice(0, 5)
   return keywords.length ? keywords.join(' ') : 'abstract background'
 }
@@ -114,7 +114,7 @@ async function findPexelsClip(query: string, aspectRatio: AspectRatio): Promise<
 /**
  * Searches Pexels' free stock video library for a clip matching the scene's
  * visual_prompt, falling back to Pixabay's free video library (a second,
- * independent source) on a miss — widens real-result coverage per query
+ * independent source) on a miss, widens real-result coverage per query
  * rather than relying on a single provider. Returns null (never throws) if
  * both come up empty/unconfigured, so the caller can fall back to the
  * branded canvas background.

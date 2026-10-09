@@ -46,7 +46,7 @@ export default function Signup() {
         </Link>
         <Card className="border-white/10">
           <h1 className="font-display text-2xl font-bold text-white">Create your account</h1>
-          <p className="mt-1 text-sm text-white/50">15 free credits to start. No card required.</p>
+          <p className="mt-1 text-sm text-white/50">Buy a credit pack to start generating videos.</p>
 
           {!supabaseConfigured && (
             <div className="mt-4 flex items-start gap-2 rounded-xl border border-yolk-500/30 bg-yolk-500/10 p-3 text-xs text-yolk-300">

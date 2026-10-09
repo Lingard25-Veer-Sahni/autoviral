@@ -15,9 +15,9 @@ const router = Router()
 // only ever sends a packId, never an amount, so a tampered request can't buy
 // credits at an arbitrary price. Mirrors web/src/pages/Billing.tsx's PACKS.
 export const PACKS: Record<string, { credits: number; price: number; label: string }> = {
-  trial: { credits: 50, price: 19, label: 'Trial pack' },
-  creator: { credits: 150, price: 49, label: 'Creator pack' },
-  studio: { credits: 600, price: 149, label: 'Studio pack' },
+  trial: { credits: 50, price: 22, label: 'Trial pack' },
+  creator: { credits: 150, price: 57, label: 'Creator pack' },
+  studio: { credits: 600, price: 169, label: 'Studio pack' },
 }
 
 const NOT_CONFIGURED_MESSAGE =

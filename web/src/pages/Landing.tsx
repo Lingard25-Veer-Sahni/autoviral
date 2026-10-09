@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -18,6 +19,72 @@ import { Card } from '@/components/Card'
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0 },
+}
+
+const HERO_VIDEOS = [
+  { url: 'https://pub-130a73d7700d408d8ce1c303b5637777.r2.dev/landing/archegos.mp4', title: 'The $20B Family Office That Shook Wall Street', tag: 'Reel · Archegos', icon: 'instagram' as const },
+  { url: 'https://pub-130a73d7700d408d8ce1c303b5637777.r2.dev/landing/black-wednesday.mp4', title: 'How Soros Broke the Bank of England', tag: 'Short · Black Wednesday', icon: 'youtube' as const },
+  { url: 'https://pub-130a73d7700d408d8ce1c303b5637777.r2.dev/landing/bond-massacre.mp4', title: "The 1994 Bond Massacre", tag: 'Reel · Bond Massacre', icon: 'instagram' as const },
+]
+
+function HeroPhone({ video, rotate }: { video: (typeof HERO_VIDEOS)[number]; rotate: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [playingAudio, setPlayingAudio] = useState(false)
+
+  function toggleAudio() {
+    const el = videoRef.current
+    if (!el) return
+    if (!playingAudio) {
+      // Pause any other hero video's audio by muting this one only — simplest
+      // behavior: unmute + play this video with sound, keep others muted.
+      el.muted = false
+      el.currentTime = 0
+      el.play().catch(() => {})
+      setPlayingAudio(true)
+    } else {
+      el.muted = true
+      setPlayingAudio(false)
+    }
+  }
+
+  return (
+    <TiltCard className={`w-56 ${rotate}`} intensity={16}>
+      <div className="animate-float rounded-2xl border border-white/10 bg-ink-700 p-3 shadow-glow-lg">
+        <button
+          type="button"
+          onClick={toggleAudio}
+          className="relative aspect-9/16 w-full overflow-hidden rounded-xl bg-ink-800"
+          aria-label={playingAudio ? 'Mute video' : 'Play with sound'}
+        >
+          <video
+            ref={videoRef}
+            src={video.url}
+            autoPlay
+            loop
+            muted={!playingAudio}
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 via-black/10 to-transparent p-3">
+            <p className="font-display text-sm font-bold text-white">{video.title}</p>
+          </div>
+          {!playingAudio && (
+            <span className="absolute right-2 top-2 rounded-full bg-black/50 px-2 py-1 text-[10px] font-medium text-white/80">
+              Tap for sound
+            </span>
+          )}
+        </button>
+        <div className="mt-2 flex items-center justify-between text-xs text-white/50">
+          <span>{video.tag}</span>
+          {video.icon === 'instagram' ? (
+            <Instagram className="h-3.5 w-3.5 text-pink-400" />
+          ) : (
+            <Youtube className="h-3.5 w-3.5 text-red-500" />
+          )}
+        </div>
+      </div>
+    </TiltCard>
+  )
 }
 
 function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
@@ -52,7 +119,7 @@ export default function Landing() {
               Log in
             </Link>
             <Link to="/signup">
-              <Button size="sm">Start free</Button>
+              <Button size="sm">Get started</Button>
             </Link>
           </div>
         </div>
@@ -97,39 +164,9 @@ export default function Landing() {
         {/* Floating 3D preview mockup */}
         <Reveal delay={0.25} className="mt-20">
           <div className="mx-auto flex max-w-5xl flex-wrap items-end justify-center gap-6 perspective-1000">
-            <TiltCard className="w-56 -rotate-2" intensity={16}>
-              <div className="animate-float rounded-2xl border border-white/10 bg-ink-700 p-3 shadow-glow-lg" style={{ animationDelay: '-1s' }}>
-                <div className="aspect-9/16 w-full rounded-xl bg-gradient-to-br from-yolk-500 via-yolk-600 to-ink-800 flex flex-col justify-end p-3">
-                  <p className="font-display text-sm font-bold text-ink-900">5 Morning Habits That Changed My Life</p>
-                </div>
-                <div className="mt-2 flex items-center justify-between text-xs text-white/50">
-                  <span>Reel · 0:34</span>
-                  <Instagram className="h-3.5 w-3.5 text-pink-400" />
-                </div>
-              </div>
-            </TiltCard>
-            <TiltCard className="w-64" intensity={16}>
-              <div className="animate-float rounded-2xl border border-yolk-500/40 bg-ink-700 p-3 shadow-glow-lg">
-                <div className="aspect-9/16 w-full rounded-xl bg-gradient-to-br from-ink-800 via-ink-700 to-yolk-700 flex flex-col justify-end p-3">
-                  <p className="font-display text-sm font-bold text-white">The Truth About Cold Plunges 🥶</p>
-                </div>
-                <div className="mt-2 flex items-center justify-between text-xs text-white/50">
-                  <span>Short · 0:41</span>
-                  <Youtube className="h-3.5 w-3.5 text-red-500" />
-                </div>
-              </div>
-            </TiltCard>
-            <TiltCard className="w-56 rotate-2" intensity={16}>
-              <div className="animate-float rounded-2xl border border-white/10 bg-ink-700 p-3 shadow-glow-lg" style={{ animationDelay: '-2s' }}>
-                <div className="aspect-9/16 w-full rounded-xl bg-gradient-to-br from-yolk-400 via-yolk-600 to-ink-900 flex flex-col justify-end p-3">
-                  <p className="font-display text-sm font-bold text-ink-900">3 AI Tools No One Talks About</p>
-                </div>
-                <div className="mt-2 flex items-center justify-between text-xs text-white/50">
-                  <span>Reel · 0:29</span>
-                  <Instagram className="h-3.5 w-3.5 text-pink-400" />
-                </div>
-              </div>
-            </TiltCard>
+            <HeroPhone video={HERO_VIDEOS[0]} rotate="-rotate-2" />
+            <HeroPhone video={HERO_VIDEOS[1]} rotate="" />
+            <HeroPhone video={HERO_VIDEOS[2]} rotate="rotate-2" />
           </div>
         </Reveal>
       </section>
@@ -218,13 +255,13 @@ export default function Landing() {
       <section id="pricing" className="mx-auto max-w-6xl px-6 py-24">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold text-white md:text-4xl">Pay for videos, not seats</h2>
-          <p className="mt-3 text-white/60">Credits scale with video length — short clips cost less, longer videos cost more. Buy credits as you grow.</p>
+          <p className="mt-3 text-white/60">Credits scale with video length — short clips cost less, longer videos cost more. Buy a credit pack, use it whenever.</p>
         </Reveal>
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {[
-            { name: 'Starter', price: '$0', credits: '15 credits / mo', highlight: false },
-            { name: 'Creator', price: '$29', credits: '150 credits / mo', highlight: true },
-            { name: 'Studio', price: '$99', credits: '600 credits / mo', highlight: false },
+            { name: 'Trial pack', price: '$22', credits: '50 credits', highlight: false },
+            { name: 'Creator pack', price: '$57', credits: '150 credits', highlight: true },
+            { name: 'Studio pack', price: '$169', credits: '600 credits', highlight: false },
           ].map((p) => (
             <Reveal key={p.name}>
               <TiltCard>
@@ -235,7 +272,7 @@ export default function Landing() {
                     </span>
                   )}
                   <h3 className="font-display text-xl font-semibold text-white">{p.name}</h3>
-                  <p className="mt-2 font-display text-4xl font-bold text-white">{p.price}<span className="text-base font-normal text-white/50">/mo</span></p>
+                  <p className="mt-2 font-display text-4xl font-bold text-white">{p.price}</p>
                   <p className="mt-1 text-sm text-white/60">{p.credits}</p>
                   <Link to="/signup" className="mt-6 block">
                     <Button variant={p.highlight ? 'primary' : 'secondary'} className="w-full">

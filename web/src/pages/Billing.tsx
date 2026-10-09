@@ -13,9 +13,9 @@ import type { CreditTransaction } from '@/types'
 // to the backend, which is the actual source of truth for price/credits (a
 // tampered client can't buy credits at a different price).
 const PACKS = [
-  { id: 'trial', credits: 50, price: 19, label: 'Trial pack' },
-  { id: 'creator', credits: 150, price: 49, label: 'Creator pack', highlight: true },
-  { id: 'studio', credits: 600, price: 149, label: 'Studio pack' },
+  { id: 'trial', credits: 50, price: 22, label: 'Trial pack' },
+  { id: 'creator', credits: 150, price: 57, label: 'Creator pack', highlight: true },
+  { id: 'studio', credits: 600, price: 169, label: 'Studio pack' },
 ]
 
 // Loaded globally in index.html via <script src="https://checkout.razorpay.com/v1/checkout.js">.

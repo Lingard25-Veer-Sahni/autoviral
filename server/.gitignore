@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+.env.local
+*.log
+# Per-render scratch assets (narration/footage) staged for Remotion's publicDir — recreated every render.
+remotion/public

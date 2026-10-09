@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+@theme {
+  --color-yolk-50: #fffdf0;
+  --color-yolk-100: #fff9c2;
+  --color-yolk-200: #fff085;
+  --color-yolk-300: #ffe047;
+  --color-yolk-400: #ffcf1f;
+  --color-yolk-500: #ffb800; /* primary brand yellow */
+  --color-yolk-600: #db8f00;
+  --color-yolk-700: #b06600;
+  --color-yolk-800: #8a4f04;
+  --color-yolk-900: #5c3608;
+
+  --color-ink-50: #f2f2f4;
+  --color-ink-100: #d8d8dd;
+  --color-ink-200: #adadb8;
+  --color-ink-300: #7d7d8c;
+  --color-ink-400: #4c4c5a;
+  --color-ink-500: #2a2a35;
+  --color-ink-600: #1c1c24;
+  --color-ink-700: #131318;
+  --color-ink-800: #0b0b0f;
+  --color-ink-900: #050506; /* near black */
+
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  --shadow-glow: 0 0 60px -10px rgba(255, 184, 0, 0.45);
+  --shadow-glow-lg: 0 0 120px -20px rgba(255, 184, 0, 0.55);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--color-ink-900);
+  color: #fdfaf0;
+  font-family: var(--font-body);
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-yolk-500);
+  color: var(--color-ink-900);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ink-800);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-500);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-yolk-600);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* 3D perspective utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Glass panel used across dashboard */
+.glass-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+}
+
+/* Animated grid backdrop */
+.grid-backdrop {
+  background-image:
+    linear-gradient(rgba(255,184,0,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,184,0,0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 60% 60% at 50% 0%, black 40%, transparent 100%);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-18px) rotate(2deg); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px 0 rgba(255,184,0,0.35); }
+  50% { box-shadow: 0 0 45px 8px rgba(255,184,0,0.55); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2.4s ease-in-out infinite;
+}
+
+.text-gradient-yolk {
+  background: linear-gradient(90deg, #ffe047, #ffb800 45%, #ff9d00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

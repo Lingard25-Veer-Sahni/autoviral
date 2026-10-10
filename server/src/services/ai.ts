@@ -6,6 +6,7 @@ import {
   kimiConfigured,
   mistralConfigured,
   openrouterConfigured,
+  openrouterAdminConfigured,
   generateVideoContentOpenAICompatible,
   PROVIDERS,
 } from './aiOpenAICompatible.js'
@@ -80,10 +81,11 @@ export async function generateVideoContent(
   // too. If OpenRouter itself isn't configured at all, admin generation
   // fails loudly instead of silently spending money on another provider.
   if (input.isAdmin) {
-    if (!openrouterConfigured) {
+    if (!openrouterAdminConfigured) {
       throw new Error(
-        'Admin generations require OPENROUTER_API_KEY to be configured (the only free-tier AI provider) -- ' +
-          'admin accounts are never allowed to use a paid provider (Claude, Kimi, Mistral) or a paid model.'
+        'Admin generations require OPENROUTER_ADMIN_API_KEY (preferred, a separate OpenRouter account/key ' +
+          'isolated from paying users) or OPENROUTER_API_KEY to be configured -- admin accounts are never ' +
+          'allowed to use a paid provider (Claude, Kimi, Mistral) or a paid model.'
       )
     }
     return generateVideoContentOpenAICompatible(input, PROVIDERS.openrouter)

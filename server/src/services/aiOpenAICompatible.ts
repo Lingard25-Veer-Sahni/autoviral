@@ -33,6 +33,13 @@ export interface OpenAICompatibleProviderConfig {
    * token spend, falling back to `model` (a cheap paid model) only if the
    * free model errors or fails validation. See generateVideoContentOpenAICompatible. */
   freeModel?: string
+  /** OpenRouter only: a SEPARATE API key used exclusively for the admin
+   * account's free-model calls, decoupled from the main OPENROUTER_API_KEY
+   * used by paying users' generations (including their paid fallback model).
+   * This keeps admin usage from ever competing with paying users for the
+   * same key's rate limits/quota, and means admin traffic is fully isolated
+   * on its own OpenRouter account. Falls back to the main key if unset. */
+  adminApiKeyEnvVar?: string
 }
 
 export const PROVIDERS: Record<OpenAICompatibleProviderKey, OpenAICompatibleProviderConfig> = {
@@ -77,20 +84,34 @@ export const PROVIDERS: Record<OpenAICompatibleProviderKey, OpenAICompatibleProv
     // aiSchema.ts. `freeModel` below is reserved for admin-account use only.
     model: process.env.OPENROUTER_MODEL || 'deepseek/deepseek-chat',
     freeModel: process.env.OPENROUTER_MODEL_FREE || 'nvidia/nemotron-3-ultra-550b-a55b:free',
+    // Dedicated key for admin-only free-model calls -- see field doc above.
+    // Set OPENROUTER_ADMIN_API_KEY on a SEPARATE OpenRouter account (sign up
+    // again with a different email, generate a key there) so admin traffic
+    // never shares rate limits/quota with the main OPENROUTER_API_KEY used
+    // by paying users. Falls back to the main key if left unset.
+    adminApiKeyEnvVar: 'OPENROUTER_ADMIN_API_KEY',
   },
 }
 
-function apiKeyFor(config: OpenAICompatibleProviderConfig): string | undefined {
+function apiKeyFor(config: OpenAICompatibleProviderConfig, isAdmin?: boolean): string | undefined {
+  if (isAdmin && config.adminApiKeyEnvVar) {
+    const adminKey = process.env[config.adminApiKeyEnvVar]
+    if (adminKey) return adminKey
+  }
   return process.env[config.apiKeyEnvVar]
 }
 
 export const kimiConfigured = Boolean(apiKeyFor(PROVIDERS.kimi))
 export const mistralConfigured = Boolean(apiKeyFor(PROVIDERS.mistral))
 export const openrouterConfigured = Boolean(apiKeyFor(PROVIDERS.openrouter))
+// Whether EITHER the dedicated admin key (OPENROUTER_ADMIN_API_KEY) or the
+// main key (OPENROUTER_API_KEY, used as a fallback if the admin-only one
+// isn't set) is available -- used to gate admin generations specifically.
+export const openrouterAdminConfigured = Boolean(apiKeyFor(PROVIDERS.openrouter, true))
 
-function clientFor(config: OpenAICompatibleProviderConfig): OpenAI {
+function clientFor(config: OpenAICompatibleProviderConfig, isAdmin?: boolean): OpenAI {
   return new OpenAI({
-    apiKey: apiKeyFor(config) || 'placeholder-key',
+    apiKey: apiKeyFor(config, isAdmin) || 'placeholder-key',
     baseURL: config.baseURL,
     // OpenRouter uses these two (optional, non-secret) headers purely for
     // attributing requests to an app on https://openrouter.ai/rankings, it
@@ -193,11 +214,15 @@ export async function generateVideoContentOpenAICompatible(
   input: GenerateVideoContentInput,
   config: OpenAICompatibleProviderConfig
 ): Promise<GeneratedVideoContent> {
-  if (!apiKeyFor(config)) {
-    throw new Error(`${config.label} is not configured: missing ${config.apiKeyEnvVar} on the server.`)
+  if (!apiKeyFor(config, input.isAdmin)) {
+    throw new Error(
+      input.isAdmin && config.adminApiKeyEnvVar
+        ? `${config.label} is not configured: missing both ${config.adminApiKeyEnvVar} and ${config.apiKeyEnvVar} on the server.`
+        : `${config.label} is not configured: missing ${config.apiKeyEnvVar} on the server.`
+    )
   }
 
-  const client = clientFor(config)
+  const client = clientFor(config, input.isAdmin)
   const userPrompt = buildUserPrompt(input)
 
   // Admin accounts must NEVER trigger real API spend: if a free model is

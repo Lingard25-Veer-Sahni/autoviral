@@ -71,6 +71,24 @@ if (!aiConfigured) {
 export async function generateVideoContent(
   input: GenerateVideoContentInput
 ): Promise<GeneratedVideoContent> {
+  // Admin accounts must never incur real API spend, regardless of which
+  // AI_PROVIDER is configured for everyone else. Claude and the Kimi/Mistral
+  // paid tiers all cost real money per call, so admin is forced onto
+  // OpenRouter, the only provider with a genuinely free (":free"-suffixed,
+  // $0 cost) model -- see generateVideoContentOpenAICompatible's isAdmin
+  // branch, which then refuses to fall back to OpenRouter's own paid model
+  // too. If OpenRouter itself isn't configured at all, admin generation
+  // fails loudly instead of silently spending money on another provider.
+  if (input.isAdmin) {
+    if (!openrouterConfigured) {
+      throw new Error(
+        'Admin generations require OPENROUTER_API_KEY to be configured (the only free-tier AI provider) -- ' +
+          'admin accounts are never allowed to use a paid provider (Claude, Kimi, Mistral) or a paid model.'
+      )
+    }
+    return generateVideoContentOpenAICompatible(input, PROVIDERS.openrouter)
+  }
+
   switch (aiProvider) {
     case 'claude':
       return generateVideoContentClaude(input)

@@ -200,16 +200,31 @@ export async function generateVideoContentOpenAICompatible(
   const client = clientFor(config)
   const userPrompt = buildUserPrompt(input)
 
-  // Every generation (admin or paying user) tries the free (":free"-suffixed,
-  // $0 real cost) model first, this keeps real OpenRouter spend near zero
-  // whenever the free tier is available. If the free model errors outright
-  // (rate-limited, pulled/unavailable, etc.) or never returns schema-valid
-  // JSON, we fall back to the cheap PAID model so generation still succeeds,
-  // paying users' credits already price in this fallback cost (see
-  // aiSchema.ts's creditsForEstimatedCost), admin generations stay free
-  // either way since initiateVideoGeneration never charges admin credits
-  // regardless of which underlying model actually served the request.
-  const candidates = config.freeModel ? [config.freeModel, config.model] : [config.model]
+  // Admin accounts must NEVER trigger real API spend: if a free model is
+  // configured, that's the ONLY candidate tried, no fallback to the paid
+  // model at all. If the free model errors/fails validation, the generation
+  // fails outright for admin rather than silently costing real money -- see
+  // the admin-only guard in generateVideoContent (ai.ts), which forces
+  // OpenRouter (the only provider with a genuinely free model) for admin
+  // regardless of AI_PROVIDER, for the same reason.
+  //
+  // Every non-admin generation still tries the free (":free"-suffixed, $0
+  // real cost) model first to keep real OpenRouter spend near zero whenever
+  // the free tier is available, falling back to the cheap PAID model only
+  // for paying users if the free model errors or fails validation -- their
+  // credits already price in this fallback cost (see aiSchema.ts's
+  // creditsForEstimatedCost).
+  const candidates = input.isAdmin
+    ? config.freeModel
+      ? [config.freeModel]
+      : (() => {
+          throw new Error(
+            `${config.label} has no configured free model and admin generations are never allowed to use a paid model.`
+          )
+        })()
+    : config.freeModel
+      ? [config.freeModel, config.model]
+      : [config.model]
 
   let lastErr: unknown
   for (const model of candidates) {

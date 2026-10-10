@@ -164,7 +164,11 @@ export async function initiateVideoGeneration(params: GenerateVideoParams) {
   // call) the free OpenRouter model instead of the paid one. Every other
   // account pays real credits, priced to cover the real paid-model + TTS +
   // storage cost (see aiSchema.ts's creditsForEstimatedCost).
-  const isAdmin = profile.role === 'admin'
+  // Tolerant comparison: `profiles.role` can end up with stray
+  // whitespace/casing when edited by hand in the Supabase dashboard (e.g.
+  // "Admin " or "ADMIN"), and a strict `=== 'admin'` would silently fail
+  // open into the paid/charged path for what's actually the admin account.
+  const isAdmin = (profile.role ?? '').trim().toLowerCase() === 'admin'
   if (!isAdmin && profile.credits < creditsCost) {
     throw new Error(
       `This video length costs ${creditsCost} credit${creditsCost === 1 ? '' : 's'} and you have ${profile.credits}. Buy more credits or pick a shorter length.`

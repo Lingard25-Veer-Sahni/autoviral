@@ -14,7 +14,7 @@ import {
 import { useAuth } from '@/context/AuthContext'
 import { Logo } from '@/components/Logo'
 import { NotificationBell } from '@/components/NotificationBell'
-import { cn } from '@/lib/utils'
+import { cn, isAdminRole } from '@/lib/utils'
 
 const nav = [
   { to: '/app', label: 'Overview', icon: LayoutGrid, end: true },
@@ -64,7 +64,7 @@ export default function DashboardLayout() {
             </NavLink>
           ))}
 
-          {profile?.role === 'admin' && (
+          {isAdminRole(profile?.role) && (
             <NavLink
               to="/app/admin"
               className={({ isActive }) =>
@@ -87,7 +87,7 @@ export default function DashboardLayout() {
               Credits
             </div>
             <span className="font-display font-bold text-yolk-400">
-              {profile?.role === 'admin' ? 'Unlimited' : profile?.credits ?? ', '}
+              {isAdminRole(profile?.role) ? 'Unlimited' : profile?.credits ?? ', '}
             </span>
           </div>
           <div className="flex items-center justify-between px-1">

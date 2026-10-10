@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/Card'
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
-import { cn } from '@/lib/utils'
+import { cn, isAdminRole } from '@/lib/utils'
 import type { Profile, VideoRecord } from '@/types'
 
 export default function AdminPanel() {
@@ -120,7 +120,7 @@ export default function AdminPanel() {
                             <option value="admin">admin</option>
                           </select>
                         ) : (
-                          <span className={cn('rounded-full px-2 py-0.5 text-xs', u.role === 'admin' ? 'bg-yolk-500/15 text-yolk-400' : 'bg-white/10 text-white/60')}>{u.role}</span>
+                          <span className={cn('rounded-full px-2 py-0.5 text-xs', isAdminRole(u.role) ? 'bg-yolk-500/15 text-yolk-400' : 'bg-white/10 text-white/60')}>{u.role}</span>
                         )}
                       </td>
                       <td className="px-4 py-3">

@@ -4,6 +4,16 @@ export function cn(...inputs: ClassValue[]) {
   return clsx(inputs)
 }
 
+/**
+ * Robust check for the admin role stored in profiles.role. Tolerates
+ * leading/trailing whitespace or differing case from however the value got
+ * written (Supabase dashboard edits, scripts, etc.) instead of a brittle
+ * strict `=== 'admin'` that silently fails on e.g. "Admin " or "ADMIN".
+ */
+export function isAdminRole(role: string | null | undefined): boolean {
+  return (role ?? '').trim().toLowerCase() === 'admin'
+}
+
 export function formatDate(iso: string | null | undefined) {
   if (!iso) return ', '
   return new Date(iso).toLocaleString(undefined, {

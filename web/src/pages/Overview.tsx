@@ -7,7 +7,7 @@ import { Card } from '@/components/Card'
 import { TiltCard } from '@/components/TiltCard'
 import { Button } from '@/components/Button'
 import { StatusPill } from '@/components/Badge'
-import { formatDate } from '@/lib/utils'
+import { formatDate, isAdminRole } from '@/lib/utils'
 
 export default function Overview() {
   const { profile } = useAuth()
@@ -36,7 +36,7 @@ export default function Overview() {
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: 'Credits left', value: profile?.role === 'admin' ? 'Unlimited' : profile?.credits ?? 0, icon: Zap },
+          { label: 'Credits left', value: isAdminRole(profile?.role) ? 'Unlimited' : profile?.credits ?? 0, icon: Zap },
           { label: 'Ready to review', value: ready, icon: Clapperboard },
           { label: 'Scheduled', value: scheduled, icon: TrendingUp },
           { label: 'Posted total', value: posted, icon: Sparkles },

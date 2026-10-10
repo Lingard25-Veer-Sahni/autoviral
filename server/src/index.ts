@@ -17,6 +17,7 @@ import socialRouter from './routes/social.js'
 import mediaRouter from './routes/media.js'
 import voicesRouter from './routes/voices.js'
 import paymentsRouter from './routes/payments.js'
+import authRouter from './routes/auth.js'
 
 const app = express()
 const PORT = Number(process.env.PORT) || 8787
@@ -60,6 +61,7 @@ app.use('/api/social', socialRouter)
 app.use('/api/media', mediaRouter)
 app.use('/api/voices', voicesRouter)
 app.use('/api/payments', paymentsRouter)
+app.use('/api/auth', authRouter)
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not found' })

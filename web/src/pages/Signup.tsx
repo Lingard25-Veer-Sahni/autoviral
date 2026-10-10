@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { supabase, supabaseConfigured } from '@/lib/supabase'
+import { api } from '@/lib/api'
 import { Button } from '@/components/Button'
 import { Input, Label } from '@/components/Input'
 import { Logo } from '@/components/Logo'
@@ -35,6 +36,7 @@ export default function Signup() {
       setError(error.message)
       return
     }
+    void api.sendWelcomeEmail(email, name)
     navigate('/onboarding')
   }
 

@@ -28,11 +28,10 @@ export interface OpenAICompatibleProviderConfig {
   apiKeyEnvVar: string
   baseURL: string
   model: string
-  /** OpenRouter only: a genuinely free (":free"-suffixed) model reserved for
-   * admin-account generations (see initiateVideoGeneration's is_admin
-   * bypass), admin usage never costs the business real per-token money,
-   * while every paying user's generation uses `model` (a cheap paid model)
-   * so real OpenRouter spend is backed by the credits that user purchased. */
+  /** OpenRouter only: a genuinely free (":free"-suffixed) model tried FIRST
+   * for every generation (admin and paying users alike) to minimize real
+   * token spend, falling back to `model` (a cheap paid model) only if the
+   * free model errors or fails validation. See generateVideoContentOpenAICompatible. */
   freeModel?: string
 }
 
@@ -127,20 +126,18 @@ function extractJson(raw: string): unknown {
  * zod validation stand in for native structured outputs, with one automatic
  * retry that feeds the validation error back to the model.
  */
-export async function generateVideoContentOpenAICompatible(
-  input: GenerateVideoContentInput,
-  config: OpenAICompatibleProviderConfig
+/**
+ * Runs the schema-validated chat-completion attempt loop (2 tries, feeding
+ * back a validation error on the retry) against a single model. Throws if
+ * the model errors outright (rate limit, 404/unavailable, etc.) OR if it
+ * never returns schema-valid JSON after retrying, either case is what
+ * triggers the caller's fallback to the next candidate model.
+ */
+async function attemptWithModel(
+  client: OpenAI,
+  model: string,
+  userPrompt: string
 ): Promise<GeneratedVideoContent> {
-  if (!apiKeyFor(config)) {
-    throw new Error(`${config.label} is not configured: missing ${config.apiKeyEnvVar} on the server.`)
-  }
-
-  const client = clientFor(config)
-  const userPrompt = buildUserPrompt(input)
-  // Admin-account generations use the free model (never costs the business
-  // real token spend); everyone else uses the configured cheap paid model.
-  const model = input.isAdmin && config.freeModel ? config.freeModel : config.model
-
   const messages: Array<{ role: 'system' | 'user'; content: string }> = [
     { role: 'system', content: `${SYSTEM_PROMPT}\n\n${schemaContractPrompt()}` },
     { role: 'user', content: userPrompt },
@@ -189,5 +186,45 @@ export async function generateVideoContentOpenAICompatible(
     lastError = result.error.message
   }
 
-  throw new Error(`${config.label} did not return a schema-valid video script after retrying: ${lastError}`)
+  throw new Error(`model "${model}" did not return a schema-valid video script after retrying: ${lastError}`)
+}
+
+export async function generateVideoContentOpenAICompatible(
+  input: GenerateVideoContentInput,
+  config: OpenAICompatibleProviderConfig
+): Promise<GeneratedVideoContent> {
+  if (!apiKeyFor(config)) {
+    throw new Error(`${config.label} is not configured: missing ${config.apiKeyEnvVar} on the server.`)
+  }
+
+  const client = clientFor(config)
+  const userPrompt = buildUserPrompt(input)
+
+  // Every generation (admin or paying user) tries the free (":free"-suffixed,
+  // $0 real cost) model first, this keeps real OpenRouter spend near zero
+  // whenever the free tier is available. If the free model errors outright
+  // (rate-limited, pulled/unavailable, etc.) or never returns schema-valid
+  // JSON, we fall back to the cheap PAID model so generation still succeeds,
+  // paying users' credits already price in this fallback cost (see
+  // aiSchema.ts's creditsForEstimatedCost), admin generations stay free
+  // either way since initiateVideoGeneration never charges admin credits
+  // regardless of which underlying model actually served the request.
+  const candidates = config.freeModel ? [config.freeModel, config.model] : [config.model]
+
+  let lastErr: unknown
+  for (const model of candidates) {
+    try {
+      return await attemptWithModel(client, model, userPrompt)
+    } catch (err) {
+      lastErr = err
+      console.warn(
+        `[${config.label}] model "${model}" failed, ${model === candidates[candidates.length - 1] ? 'no more fallbacks' : 'falling back to next model'}:`,
+        err instanceof Error ? err.message : err
+      )
+    }
+  }
+
+  throw lastErr instanceof Error
+    ? lastErr
+    : new Error(`${config.label} failed to generate a video script after trying all fallback models.`)
 }

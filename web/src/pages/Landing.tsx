@@ -1,4 +1,3 @@
-import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -28,52 +27,22 @@ const HERO_VIDEOS = [
 ]
 
 function HeroPhone({ video, rotate }: { video: (typeof HERO_VIDEOS)[number]; rotate: string }) {
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const [playingAudio, setPlayingAudio] = useState(false)
-
-  function toggleAudio() {
-    const el = videoRef.current
-    if (!el) return
-    if (!playingAudio) {
-      // Pause any other hero video's audio by muting this one only, simplest
-      // behavior: unmute + play this video with sound, keep others muted.
-      el.muted = false
-      el.currentTime = 0
-      el.play().catch(() => {})
-      setPlayingAudio(true)
-    } else {
-      el.muted = true
-      setPlayingAudio(false)
-    }
-  }
-
   return (
     <TiltCard className={`w-56 ${rotate}`} intensity={16}>
       <div className="animate-float rounded-2xl border border-white/10 bg-ink-700 p-3 shadow-glow-lg">
-        <button
-          type="button"
-          onClick={toggleAudio}
-          className="relative aspect-9/16 w-full overflow-hidden rounded-xl bg-ink-800"
-          aria-label={playingAudio ? 'Mute video' : 'Play with sound'}
-        >
+        <div className="relative aspect-9/16 w-full overflow-hidden rounded-xl bg-ink-800">
           <video
-            ref={videoRef}
             src={video.url}
             autoPlay
             loop
-            muted={!playingAudio}
+            muted
             playsInline
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 via-black/10 to-transparent p-3">
             <p className="font-display text-sm font-bold text-white">{video.title}</p>
           </div>
-          {!playingAudio && (
-            <span className="absolute right-2 top-2 rounded-full bg-black/50 px-2 py-1 text-[10px] font-medium text-white/80">
-              Tap for sound
-            </span>
-          )}
-        </button>
+        </div>
         <div className="mt-2 flex items-center justify-between text-xs text-white/50">
           <span>{video.tag}</span>
           {video.icon === 'instagram' ? (

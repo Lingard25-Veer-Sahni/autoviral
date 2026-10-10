@@ -75,6 +75,15 @@ export interface VoiceProfile {
 }
 
 export const api = {
+  // Fired once right after a successful signup (see Signup.tsx). No auth
+  // required (the session may not be confirmed yet) and best-effort: a
+  // failure here must never block the signup flow itself.
+  sendWelcomeEmail: (email: string, name: string) =>
+    fetch(`${BASE_URL}/api/auth/welcome-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name }),
+    }).catch(() => undefined),
   generateVideo: (payload: GenerateVideoPayload) => {
     if (!payload.thumbnailImageFile) {
       return request<{ video: unknown }>('/api/videos/generate', {

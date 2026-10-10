@@ -24,6 +24,15 @@ const PORT = Number(process.env.PORT) || 8787
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
 
 app.use(cors({ origin: CLIENT_URL }))
+// Every response from this API is dynamic (auth state, OAuth config, live DB
+// data) -- without this, browsers (Safari in particular) can cache a GET
+// response by URL and keep serving it indefinitely even across reloads,
+// e.g. caching an early "YouTube OAuth isn't configured" response from
+// before env vars were set, and never re-fetching the real one.
+app.use((_req, res, next) => {
+  res.set('Cache-Control', 'no-store')
+  next()
+})
 app.use(
   express.json({
     limit: '2mb',

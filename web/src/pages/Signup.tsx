@@ -78,11 +78,6 @@ export default function Signup() {
               <Label htmlFor="password">Password</Label>
               <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 6 characters" />
             </div>
-            <p className="text-xs leading-relaxed text-white/40">
-              Credits spent on a video generation that fails are{' '}
-              <span className="font-medium text-white/60">not refunded</span>. Generation pricing already accounts
-              for typical failure rates.
-            </p>
             <label className="flex items-start gap-2 text-[11px] leading-relaxed text-white/50">
               <input
                 type="checkbox"

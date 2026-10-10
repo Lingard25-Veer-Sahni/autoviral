@@ -1,0 +1,31 @@
+<!--
+  Supabase "Confirm signup" email template. Paste this into:
+  Supabase Dashboard -> Authentication -> Email Templates -> Confirm signup
+  (replace the entire body). Supabase template variables used: {{ .ConfirmationURL }}.
+-->
+<div style="background-color:#0d0d0f; padding:40px 16px; font-family: -apple-system, 'Segoe UI', sans-serif;">
+  <div style="max-width:480px; margin:0 auto; background-color:#17171a; border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:32px;">
+    <div style="text-align:center; margin-bottom:24px;">
+      <span style="display:inline-block; background-color:#ffb800; color:#0d0d0f; font-weight:800; font-size:18px; padding:8px 16px; border-radius:10px; letter-spacing:-0.5px;">
+        Autoviral
+      </span>
+    </div>
+    <h1 style="color:#ffffff; font-size:20px; font-weight:700; margin:0 0 12px; text-align:center;">
+      Confirm your email
+    </h1>
+    <p style="color:rgba(255,255,255,0.6); font-size:14px; line-height:1.6; text-align:center; margin:0 0 28px;">
+      Thanks for signing up for Autoviral. Click below to confirm your email and activate your account.
+    </p>
+    <div style="text-align:center; margin-bottom:28px;">
+      <a href="{{ .ConfirmationURL }}" style="display:inline-block; background-color:#ffb800; color:#0d0d0f; font-weight:700; font-size:14px; padding:14px 28px; border-radius:10px; text-decoration:none;">
+        Confirm email
+      </a>
+    </div>
+    <p style="color:rgba(255,255,255,0.35); font-size:11px; line-height:1.5; text-align:center; margin:0;">
+      If you didn't create an Autoviral account, you can safely ignore this email.
+    </p>
+  </div>
+  <p style="color:rgba(255,255,255,0.3); font-size:11px; text-align:center; margin:20px 0 0;">
+    Autoviral &middot; AI video, on autopilot.
+  </p>
+</div>

@@ -7,6 +7,7 @@ import { Button } from '@/components/Button'
 import { Input, Label } from '@/components/Input'
 import { Logo } from '@/components/Logo'
 import { Card } from '@/components/Card'
+import { TermsModal } from '@/components/TermsModal'
 import { AlertCircle } from 'lucide-react'
 
 export default function Signup() {
@@ -17,6 +18,7 @@ export default function Signup() {
   const [agreed, setAgreed] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [showTerms, setShowTerms] = useState(false)
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
@@ -90,9 +92,16 @@ export default function Signup() {
               />
               <span>
                 I have read and agree to the{' '}
-                <Link to="/terms" target="_blank" className="font-medium text-yolk-400 hover:underline">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setShowTerms(true)
+                  }}
+                  className="font-medium text-yolk-400 hover:underline"
+                >
                   Terms &amp; Conditions and Privacy Policy
-                </Link>
+                </button>
                 , including the no-refund policy on failed generations.
               </span>
             </label>
@@ -109,6 +118,7 @@ export default function Signup() {
           </p>
         </Card>
       </motion.div>
+      {showTerms && <TermsModal onClose={() => setShowTerms(false)} />}
     </div>
   )
 }

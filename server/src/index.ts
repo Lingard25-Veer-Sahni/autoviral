@@ -4,7 +4,6 @@ import cors from 'cors'
 import { supabaseConfigured } from './supabaseAdmin.js'
 import { aiConfigured, aiProvider } from './services/ai.js'
 import { youtubeConfigured } from './services/youtube.js'
-import { instagramConfigured } from './services/instagram.js'
 import { pexelsConfigured } from './services/stockFootage.js'
 import { imageSearchConfigured } from './services/imageSearch.js'
 import { b2Configured } from './services/b2Storage.js'
@@ -55,7 +54,6 @@ app.get('/api/health', (_req, res) => {
     aiConfigured,
     aiProvider,
     youtubeConfigured,
-    instagramConfigured,
     pexelsConfigured,
     imageSearchConfigured,
     b2Configured,
@@ -89,7 +87,6 @@ app.listen(PORT, () => {
       `AI (${aiProvider}): ${aiConfigured ? 'configured' : 'NOT configured'} · ` +
       `Stock footage (Pexels): ${pexelsConfigured ? 'configured' : 'NOT configured, using branded backgrounds only'} · ` +
       `YouTube: ${youtubeConfigured ? 'configured' : 'not configured'} · ` +
-      `Instagram: ${instagramConfigured ? 'configured' : 'not configured'} · ` +
       `Video storage (B2): ${b2Configured ? 'configured' : 'not configured, falling back to Supabase Storage (small files only)'} · ` +
       `Narration (ElevenLabs): ${elevenLabsConfigured ? 'configured (primary, falls back to Azure/say on failure)' : 'not configured'} · ` +
       `Custom cloned voices (Voicebox): ${voiceboxConfigured ? 'configured' : 'not configured, see SETUP.md to run it locally via Docker'}`

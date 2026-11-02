@@ -1,4 +1,4 @@
-export type Platform = 'youtube' | 'instagram'
+export type Platform = 'youtube'
 
 export interface VideoScriptScene {
   narration: string

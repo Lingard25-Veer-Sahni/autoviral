@@ -133,12 +133,12 @@ export const api = {
     }),
 
   connectStatus: () =>
-    request<{ youtube: boolean; instagram: boolean }>('/api/social/status'),
+    request<{ youtube: boolean }>('/api/social/status'),
 
-  oauthUrl: (platform: 'youtube' | 'instagram') =>
+  oauthUrl: (platform: 'youtube') =>
     request<{ url: string; configured: boolean }>(`/api/social/${platform}/oauth-url`),
 
-  disconnect: (platform: 'youtube' | 'instagram') =>
+  disconnect: (platform: 'youtube') =>
     request<{ ok: boolean }>(`/api/social/${platform}/disconnect`, { method: 'POST' }),
 
   listVoices: () => request<{ voiceProfiles: VoiceProfile[]; voiceboxConfigured: boolean }>('/api/voices'),

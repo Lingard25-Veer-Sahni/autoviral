@@ -3,7 +3,7 @@
 Autoviral is a real, working product: real AI-written scripts (Anthropic's AI, or a free
 alternative like Kimi/Mistral), real rendered video (real stock footage or Remotion's
 animated captions + macOS TTS narration + ffmpeg), real storage (Supabase Storage),
-and real posting (YouTube Data API v3 + Instagram Graph API) once you add your own
+and real posting (YouTube Data API v3) once you add your own
 credentials below. Nothing here is a mockup — every integration point either works
 today or is fully wired and just waiting on a credential.
 
@@ -20,7 +20,7 @@ today or is fully wired and just waiting on a credential.
   [Mistral key](https://console.mistral.ai) (also has a free tier), or a free
   [OpenRouter key](https://openrouter.ai/keys) (proxies many providers, including
   genuinely free models). See "AI provider options" under step 3.
-- (Optional, to go fully live) A Google Cloud OAuth client + a Meta Developer app
+- (Optional, to go fully live) A Google Cloud OAuth client
 
 ---
 
@@ -30,6 +30,7 @@ today or is fully wired and just waiting on a credential.
 2. Open the **SQL Editor** and run, in order:
    - `supabase/migrations/0001_init.sql`
    - `supabase/migrations/0002_social_account_meta.sql`
+   - (and any further numbered migrations in `supabase/migrations/`, in order)
 3. Go to **Project Settings → API** and copy:
    - `Project URL`
    - `anon public` key
@@ -83,13 +84,13 @@ npm run dev
 ```
 
 Visit `http://localhost:8787/api/health` — it reports which integrations are actually
-configured (`supabaseConfigured`, `aiConfigured`, `youtubeConfigured`, `instagramConfigured`).
+configured (`supabaseConfigured`, `aiConfigured`, `youtubeConfigured`).
 The Accounts page in the app surfaces the same thing if the server isn't reachable at all.
 
 At this point you can sign up, complete onboarding, describe a video, and get a real
 generated `.mp4` with real narration, a real branded thumbnail, and a real
 AI-written title/description/hashtags — end to end, no mocking. What you can't do
-yet is post it to YouTube/Instagram — that needs steps 4–5.
+yet is post it to YouTube — that needs step 4.
 
 ### 3a. AI provider options (Anthropic's AI, or free alternatives: Kimi / Mistral / OpenRouter)
 
@@ -348,36 +349,7 @@ rather than failing the whole generation.
    refresh token and can now upload real Shorts via `videos.insert` (resumable upload,
    streamed straight from Supabase Storage).
 
-## 5. Instagram posting (Meta Developer App + Instagram Graph API)
-
-Instagram's Graph API only publishes to **Business or Creator** accounts linked to a
-**Facebook Page** — a personal/no-Page Instagram account cannot be used.
-
-1. Go to [developers.facebook.com](https://developers.facebook.com/) → **My Apps → Create App** → type **Business**.
-2. Add the **Instagram Graph API** product (and Facebook Login, which is used for the OAuth dialog).
-3. In **Facebook Login → Settings**, add a valid OAuth redirect URI:
-   `http://localhost:8787/api/social/instagram/callback`
-4. Make sure the Instagram account you want to post from is a Business/Creator account and is
-   linked to a Facebook Page you manage (Meta Business Suite → Settings → linked accounts).
-5. Add these permissions to your app (Business Verification is required for these in
-   production — for development/testing, add yourself as an app tester/admin to bypass that):
-   `instagram_basic`, `instagram_content_publish`, `pages_show_list`, `pages_read_engagement`, `business_management`
-6. Copy the App ID / App Secret into `server/.env`:
-   ```
-   META_APP_ID=...
-   META_APP_SECRET=...
-   META_REDIRECT_URI=http://localhost:8787/api/social/instagram/callback
-   ```
-7. Restart the server, go to **Accounts → Connect Instagram**. On approval, Autoviral
-   walks the full real flow server-side: short-lived → long-lived user token → finds your
-   linked Page → finds that Page's Instagram Business Account → stores its long-lived
-   Page access token (encrypted) for publishing.
-
-Posting a Reel calls the real Graph API container flow: create a `REELS` media container
-pointing at the video's public Supabase Storage URL, poll until Instagram finishes
-processing it, then publish it.
-
-## 6. How autopilot & scheduling actually run
+## 5. How autopilot & scheduling actually run
 
 - **Channel Autopilot**: a cron job (`server/src/services/scheduler.ts`, via `node-cron`)
   ticks every minute. For each active autopilot channel, it computes `24h / videos_per_day`
@@ -388,7 +360,7 @@ processing it, then publish it.
 - The server process must be running continuously for either of these to fire (use
   `npm run build && npm start`, or a process manager like `pm2`/systemd, in production).
 
-## 7. Credits & billing
+## 6. Credits & billing
 
 Every generated video costs 1 credit (deducted immediately, refunded automatically if
 generation fails). New signups get 15 free credits (see the `handle_new_user()` trigger
@@ -397,7 +369,7 @@ in `0001_init.sql`). The in-app Billing page currently performs a **mock checkou
 up real Stripe payments is the one remaining piece for a fully monetizable product, and
 isn't included here since it needs your own Stripe account and pricing decisions.
 
-## 8. Swapping the TTS engine (for non-macOS deployment)
+## 7. Swapping the TTS engine (for non-macOS deployment)
 
 `server/src/services/render.ts` calls the macOS `say` binary for real narration audio —
 zero cost, zero API key, but macOS-only. To deploy on Linux, replace
@@ -405,7 +377,7 @@ zero cost, zero API key, but macOS-only. To deploy on Linux, replace
 Cloud TTS, Amazon Polly) that returns an audio file — the rest of the pipeline
 (canvas frame rendering, ffmpeg muxing, Supabase upload) is platform-independent.
 
-## 9. Project layout
+## 8. Project layout
 
 ```
 autoviral/

@@ -4,14 +4,10 @@ import {
   X,
   CalendarClock,
   Save,
-  Heart,
   MessageCircle,
-  Send as SendIcon,
-  Bookmark,
   ThumbsUp,
-  MoreVertical,
 } from 'lucide-react'
-import { Youtube, Instagram } from './BrandIcons'
+import { Youtube } from './BrandIcons'
 import { supabase } from '@/lib/supabase'
 import { api } from '@/lib/api'
 import { Button } from './Button'
@@ -20,7 +16,7 @@ import { StatusPill } from './Badge'
 import { ProgressRing } from './ProgressRing'
 import type { VideoRecord } from '@/types'
 
-type Tab = 'details' | 'youtube' | 'instagram'
+type Tab = 'details' | 'youtube'
 
 export function VideoDetailModal({
   video,
@@ -69,7 +65,7 @@ export function VideoDetailModal({
     }
   }
 
-  async function postNow(platform: 'youtube' | 'instagram') {
+  async function postNow(platform: 'youtube') {
     setPosting(platform)
     try {
       await api.postVideo(video.id, [platform])
@@ -80,7 +76,6 @@ export function VideoDetailModal({
   }
 
   const yt = video.platform_targets?.youtube
-  const ig = video.platform_targets?.instagram
 
   return (
     <AnimatePresence>
@@ -134,7 +129,7 @@ export function VideoDetailModal({
           {/* Right: tabs */}
           <div className="flex-1 overflow-y-auto p-6">
             <div className="mb-5 flex gap-1 rounded-xl bg-white/5 p-1">
-              {(['details', 'youtube', 'instagram'] as Tab[]).map((t) => (
+              {(['details', 'youtube'] as Tab[]).map((t) => (
                 <button
                   key={t}
                   onClick={() => setTab(t)}
@@ -174,12 +169,9 @@ export function VideoDetailModal({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="grid grid-cols-1 gap-3 pt-2">
                   <Button onClick={() => postNow('youtube')} loading={posting === 'youtube'} disabled={yt?.status === 'posted'}>
                     <Youtube className="h-4 w-4" /> {yt?.status === 'posted' ? 'Posted' : 'Post to YouTube'}
-                  </Button>
-                  <Button onClick={() => postNow('instagram')} loading={posting === 'instagram'} disabled={ig?.status === 'posted'}>
-                    <Instagram className="h-4 w-4" /> {ig?.status === 'posted' ? 'Posted' : 'Post to Instagram'}
                   </Button>
                 </div>
               </div>
@@ -204,30 +196,6 @@ export function VideoDetailModal({
                   </div>
                 </div>
                 <p className="mt-4 whitespace-pre-wrap rounded-xl bg-white/5 p-3 text-xs text-white/60">{description || 'No description'}</p>
-              </div>
-            )}
-
-            {tab === 'instagram' && (
-              <div>
-                <p className="mb-3 text-xs font-medium uppercase tracking-wide text-white/40">Instagram Reel preview</p>
-                <div className="relative mx-auto aspect-9/16 max-w-[260px] overflow-hidden rounded-2xl border border-white/10 bg-black">
-                  {video.thumbnail_url && (
-                    <img src={video.thumbnail_url} className="absolute inset-0 h-full w-full object-cover" alt="" />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
-                  <div className="absolute bottom-3 left-3 right-14 text-white">
-                    <p className="text-xs font-semibold">@yourbrand</p>
-                    <p className="mt-1 line-clamp-2 text-[11px] text-white/90">{description || title}</p>
-                  </div>
-                  <div className="absolute bottom-3 right-2 flex flex-col items-center gap-3 text-white">
-                    <Heart className="h-5 w-5" />
-                    <MessageCircle className="h-5 w-5" />
-                    <SendIcon className="h-5 w-5" />
-                    <Bookmark className="h-5 w-5" />
-                    <MoreVertical className="h-5 w-5" />
-                  </div>
-                </div>
-                <p className="mt-4 text-xs text-white/60">{hashtags}</p>
               </div>
             )}
           </div>

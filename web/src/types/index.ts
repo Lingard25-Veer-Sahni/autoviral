@@ -9,7 +9,7 @@ export type VideoStatus =
   | 'posting'
   | 'posted'
   | 'failed'
-export type Platform = 'youtube' | 'instagram'
+export type Platform = 'youtube'
 export type AspectRatio = '9:16' | '16:9' | '1:1'
 
 export interface Profile {

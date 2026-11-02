@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Wand2, Sparkles, Check, ArrowRight, ArrowLeft } from 'lucide-react'
-import { Youtube, Instagram } from '@/components/BrandIcons'
+import { Youtube } from '@/components/BrandIcons'
 import { useAuth } from '@/context/AuthContext'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/Button'
@@ -174,19 +174,6 @@ export default function Onboarding() {
                     <div className="text-left">
                       <p className="font-medium text-white">YouTube</p>
                       <p className="text-xs text-white/50">Shorts & long-form</p>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => togglePlatform('instagram')}
-                    className={cn(
-                      'flex items-center gap-3 rounded-2xl border p-4 transition',
-                      platforms.includes('instagram') ? 'border-yolk-500 bg-yolk-500/10' : 'border-white/10 hover:border-white/25'
-                    )}
-                  >
-                    <Instagram className="h-6 w-6 text-pink-400" />
-                    <div className="text-left">
-                      <p className="font-medium text-white">Instagram</p>
-                      <p className="text-xs text-white/50">Reels</p>
                     </div>
                   </button>
                 </div>

@@ -1,7 +1,6 @@
 import { supabaseAdmin } from '../supabaseAdmin.js'
 import { encryptToken, decryptToken } from './tokenCrypto.js'
 import { refreshYoutubeAccessToken, uploadYoutubeShort } from './youtube.js'
-import { publishInstagramReel } from './instagram.js'
 import type { Platform } from '../types.js'
 
 interface SocialAccountRow {
@@ -34,7 +33,7 @@ export interface PostVideoInput {
   hashtags: string[]
 }
 
-/** Posts an already-rendered video to a connected platform using real APIs (YouTube Data API v3 / Instagram Graph API). */
+/** Posts an already-rendered video to a connected platform using real APIs (YouTube Data API v3). */
 export async function postVideoToPlatform(input: PostVideoInput): Promise<{ url: string | null }> {
   const account = await getConnectedAccount(input.userId, input.platform)
   if (!account) {
@@ -65,23 +64,6 @@ export async function postVideoToPlatform(input: PostVideoInput): Promise<{ url:
       videoUrl: input.videoUrl,
       title: input.title,
       description: input.description,
-      hashtags: input.hashtags,
-    })
-    return { url: result.url }
-  }
-
-  if (input.platform === 'instagram') {
-    const pageAccessToken = decryptToken(account.access_token)
-    const igUserId = account.platform_account_id
-    if (!pageAccessToken || !igUserId) {
-      throw new Error('Your Instagram connection is incomplete or expired. Please reconnect your account.')
-    }
-
-    const result = await publishInstagramReel({
-      pageAccessToken,
-      igUserId,
-      videoUrl: input.videoUrl,
-      caption: input.title,
       hashtags: input.hashtags,
     })
     return { url: result.url }

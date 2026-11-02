@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Sparkles, Loader2, Wand2, ImagePlus, Search, Upload, X, Mic, Trash2, Square, RotateCcw, Star } from 'lucide-react'
-import { Youtube, Instagram } from '@/components/BrandIcons'
+import { Youtube } from '@/components/BrandIcons'
 import { useAuth } from '@/context/AuthContext'
 import { api, type ImageSearchResult, type VoiceProfile } from '@/lib/api'
 import { Card } from '@/components/Card'
@@ -48,7 +48,7 @@ export default function CreateVideo() {
   const [voice, setVoice] = useState('energetic')
   const [aspect, setAspect] = useState<'9:16' | '16:9' | '1:1'>('9:16')
   const [duration, setDuration] = useState<DurationValue>('30-60s')
-  const [platforms, setPlatforms] = useState<Platform[]>(['youtube', 'instagram'])
+  const [platforms, setPlatforms] = useState<Platform[]>(['youtube'])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -750,15 +750,6 @@ export default function CreateVideo() {
                 )}
               >
                 <Youtube className="h-4 w-4 text-red-500" /> YouTube
-              </button>
-              <button
-                onClick={() => togglePlatform('instagram')}
-                className={cn(
-                  'flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-2.5 text-sm',
-                  platforms.includes('instagram') ? 'border-yolk-500 bg-yolk-500/10 text-white' : 'border-white/10 text-white/50'
-                )}
-              >
-                <Instagram className="h-4 w-4 text-pink-400" /> Instagram
               </button>
             </div>
           </div>

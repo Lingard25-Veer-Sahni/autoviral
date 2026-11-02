@@ -107,7 +107,7 @@ router.post(
       // always sends an explicit aspectRatio anyway.
       aspectRatio: (aspectRatio as any) || undefined,
       targetDuration: (targetDuration as any) || DEFAULT_TARGET_DURATION,
-      platforms: Array.isArray(platforms) ? platforms.filter((p) => p === 'youtube' || p === 'instagram') : [],
+      platforms: Array.isArray(platforms) ? platforms.filter((p) => p === 'youtube') : [],
       thumbnailImage,
     })
     res.status(201).json({ video })
@@ -120,7 +120,7 @@ router.post(
 router.post('/:id/post', requireAuth, async (req: AuthedRequest, res) => {
   const { id } = req.params
   const platforms: Platform[] = Array.isArray(req.body?.platforms)
-    ? req.body.platforms.filter((p: unknown): p is Platform => p === 'youtube' || p === 'instagram')
+    ? req.body.platforms.filter((p: unknown): p is Platform => p === 'youtube')
     : []
 
   if (!platforms.length) {

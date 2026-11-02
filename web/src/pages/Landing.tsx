@@ -9,7 +9,7 @@ import {
   ArrowRight,
   Check,
 } from 'lucide-react'
-import { Youtube, Instagram } from '@/components/BrandIcons'
+import { Youtube } from '@/components/BrandIcons'
 import { Logo } from '@/components/Logo'
 import { Button } from '@/components/Button'
 import { TiltCard } from '@/components/TiltCard'
@@ -21,9 +21,9 @@ const fadeUp = {
 }
 
 const HERO_VIDEOS = [
-  { url: 'https://pub-130a73d7700d408d8ce1c303b5637777.r2.dev/landing/archegos.mp4', title: 'The $20B Family Office That Shook Wall Street', tag: 'Reel · Archegos', icon: 'instagram' as const },
+  { url: 'https://pub-130a73d7700d408d8ce1c303b5637777.r2.dev/landing/archegos.mp4', title: 'The $20B Family Office That Shook Wall Street', tag: 'Short · Archegos', icon: 'youtube' as const },
   { url: 'https://pub-130a73d7700d408d8ce1c303b5637777.r2.dev/landing/black-wednesday.mp4', title: 'How Soros Broke the Bank of England', tag: 'Short · Black Wednesday', icon: 'youtube' as const },
-  { url: 'https://pub-130a73d7700d408d8ce1c303b5637777.r2.dev/landing/bond-massacre.mp4', title: "The 1994 Bond Massacre", tag: 'Reel · Bond Massacre', icon: 'instagram' as const },
+  { url: 'https://pub-130a73d7700d408d8ce1c303b5637777.r2.dev/landing/bond-massacre.mp4', title: "The 1994 Bond Massacre", tag: 'Short · Bond Massacre', icon: 'youtube' as const },
 ]
 
 function HeroPhone({ video, rotate }: { video: (typeof HERO_VIDEOS)[number]; rotate: string }) {
@@ -45,11 +45,7 @@ function HeroPhone({ video, rotate }: { video: (typeof HERO_VIDEOS)[number]; rot
         </div>
         <div className="mt-2 flex items-center justify-between text-xs text-white/50">
           <span>{video.tag}</span>
-          {video.icon === 'instagram' ? (
-            <Instagram className="h-3.5 w-3.5 text-pink-400" />
-          ) : (
-            <Youtube className="h-3.5 w-3.5 text-red-500" />
-          )}
+          <Youtube className="h-3.5 w-3.5 text-red-500" />
         </div>
       </div>
     </TiltCard>
@@ -110,7 +106,7 @@ export default function Landing() {
         </Reveal>
         <Reveal delay={0.1}>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-white/60">
-            Autoviral writes, voices, edits, and thumbnails a brand-new video every single day, then posts it straight to Instagram and YouTube. Or hand-craft each video yourself.
+            Autoviral writes, voices, edits, and thumbnails a brand-new video every single day, then posts it straight to YouTube. Or hand-craft each video yourself.
             Either way, you never touch an editing timeline again.
           </p>
         </Reveal>
@@ -206,7 +202,6 @@ export default function Landing() {
             { icon: ImageIcon, title: 'Auto thumbnails', desc: 'Branded, scroll-stopping thumbnails generated for every video.' },
             { icon: CalendarClock, title: 'Smart scheduling', desc: 'Queue, review, and schedule posts per platform, at the best time to post.' },
             { icon: Youtube, title: 'YouTube native', desc: 'Uploads formatted for Shorts or long-form, titled and tagged for search.' },
-            { icon: Instagram, title: 'Instagram native', desc: 'Reels formatted 9:16 with captions and hashtags tuned for reach.' },
           ].map((f, i) => (
             <Reveal key={f.title} delay={i * 0.05}>
               <Card className="h-full">

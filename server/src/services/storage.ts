@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '../supabaseAdmin.js'
-import { uploadToB2, b2Configured } from './b2Storage.js'
+import { uploadToB2, b2Configured, b2AdminConfigured } from './b2Storage.js'
 import { uploadToAppwrite, appwriteConfigured, deleteFromAppwrite, isAppwriteUrl } from './appwriteStorage.js'
 import { backupToPocketBase } from './pocketbaseBackup.js'
 
@@ -32,16 +32,24 @@ export type StorageBucket = 'videos' | 'thumbnails'
  * instance (see pocketbaseBackup.ts) -- a second, completely independent
  * backup that doesn't share infrastructure with any of the providers above.
  * Failure there is logged only; it never affects the returned URL or throws.
+ *
+ * `isAdmin` routes video uploads to a fully separate B2/R2 account
+ * (B2_ADMIN_* env vars, see b2Storage.ts) when one is configured -- a
+ * second account means a second, genuinely independent free-tier quota, so
+ * admin's renders never eat into or risk exhausting paying users' storage
+ * headroom. Falls back to the shared main account if no dedicated admin
+ * account is set up.
  */
 export async function uploadToStorage(
   bucket: StorageBucket,
   path: string,
   data: Buffer,
-  contentType: string
+  contentType: string,
+  isAdmin?: boolean
 ): Promise<string> {
-  if (bucket === 'videos' && b2Configured) {
+  if (bucket === 'videos' && (b2Configured || b2AdminConfigured)) {
     try {
-      const url = await uploadToB2(path, data, contentType)
+      const url = await uploadToB2(path, data, contentType, isAdmin)
       backupToPocketBase(path, data, contentType)
       return url
     } catch (err) {

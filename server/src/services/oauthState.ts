@@ -10,7 +10,7 @@ const MAX_AGE_MS = 15 * 60 * 1000 // 15 minutes to complete the OAuth dance
 
 export interface OAuthStatePayload {
   userId: string
-  platform: 'youtube' | 'instagram'
+  platform: 'youtube'
 }
 
 function sign(data: string): string {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Wand2, Pause, Play, Loader2, Zap, Layers, Smartphone, RectangleHorizontal, Square } from 'lucide-react'
-import { Youtube, Instagram } from '@/components/BrandIcons'
+import { Youtube } from '@/components/BrandIcons'
 import { useAuth } from '@/context/AuthContext'
 import { useChannels, useVideos } from '@/lib/hooks'
 import { supabase } from '@/lib/supabase'
@@ -243,15 +243,6 @@ export default function Autopilot() {
                   )}
                 >
                   <Youtube className="h-4 w-4 text-red-500" /> YouTube
-                </button>
-                <button
-                  onClick={() => togglePlatform('instagram')}
-                  className={cn(
-                    'flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-2.5 text-sm',
-                    platforms.includes('instagram') ? 'border-yolk-500 bg-yolk-500/10 text-white' : 'border-white/10 text-white/50'
-                  )}
-                >
-                  <Instagram className="h-4 w-4 text-pink-400" /> Instagram
                 </button>
               </div>
             </div>

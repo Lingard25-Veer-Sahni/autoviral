@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 import type { VideoStatus, Platform } from '@/types'
 import { Loader2, CheckCircle2, Clock, XCircle, Sparkles } from 'lucide-react'
-import { Youtube, Instagram } from './BrandIcons'
+import { Youtube } from './BrandIcons'
 
 const statusConfig: Record<VideoStatus, { label: string; className: string; icon: React.ReactNode }> = {
   queued: { label: 'Queued', className: 'bg-white/10 text-white/70', icon: <Clock className="h-3 w-3" /> },
@@ -29,7 +29,7 @@ export function StatusPill({ status }: { status: VideoStatus }) {
 
 export function PlatformIcon({ platform, className }: { platform: Platform; className?: string }) {
   if (platform === 'youtube') return <Youtube className={cn('text-red-500', className)} />
-  return <Instagram className={cn('text-pink-400', className)} />
+  return null
 }
 
 export function Badge({ children, className }: { children: React.ReactNode; className?: string }) {

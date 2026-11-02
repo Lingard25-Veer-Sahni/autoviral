@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Wand2, Sparkles, Clapperboard, Zap, TrendingUp } from 'lucide-react'
-import { Youtube, Instagram } from '@/components/BrandIcons'
+import { Youtube } from '@/components/BrandIcons'
 import { useAuth } from '@/context/AuthContext'
 import { useVideos, useChannels } from '@/lib/hooks'
 import { Card } from '@/components/Card'
@@ -86,7 +86,6 @@ export default function Overview() {
               <p className="text-sm text-white/50 line-clamp-3">{activeChannel.niche_description}</p>
               <div className="flex items-center gap-2 text-xs text-white/40">
                 {activeChannel.platforms.includes('youtube') && <Youtube className="h-4 w-4 text-red-500" />}
-                {activeChannel.platforms.includes('instagram') && <Instagram className="h-4 w-4 text-pink-400" />}
                 <span>{activeChannel.videos_per_day}/day</span>
               </div>
               <Link to="/app/autopilot"><Button variant="secondary" size="sm" className="w-full">Manage</Button></Link>

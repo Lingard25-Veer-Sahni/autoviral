@@ -59,7 +59,7 @@ async function ensureBucket(): Promise<void> {
         bucketId: BUCKET_ID,
         name: BUCKET_ID,
         // Public read so the resulting file URL works directly in <video>
-        // tags and when handed to the YouTube/Instagram posting APIs,
+        // tags and when handed to the YouTube posting API,
         // mirroring how the B2/Filebase/R2 buckets are configured public.
         permissions: [Permission.read(Role.any())],
         fileSecurity: false,

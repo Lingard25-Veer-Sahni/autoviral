@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Clapperboard, Trash2, Loader2, Sparkles, Check, CalendarClock, Send, X } from 'lucide-react'
-import { Youtube, Instagram } from '@/components/BrandIcons'
+import { Youtube } from '@/components/BrandIcons'
 import { useVideos } from '@/lib/hooks'
 import { supabase } from '@/lib/supabase'
 import { api } from '@/lib/api'
@@ -34,7 +34,7 @@ export default function VideoManager() {
   const [schedulePanelOpen, setSchedulePanelOpen] = useState(false)
   const [postPanelOpen, setPostPanelOpen] = useState(false)
   const [bulkScheduleAt, setBulkScheduleAt] = useState('')
-  const [bulkPlatforms, setBulkPlatforms] = useState<Set<'youtube' | 'instagram'>>(new Set())
+  const [bulkPlatforms, setBulkPlatforms] = useState<Set<'youtube'>>(new Set())
   const [bulkBusy, setBulkBusy] = useState<{ action: BulkAction; done: number; total: number } | null>(null)
 
   const filtered = filter === 'all' ? videos : videos.filter((v) => v.status === filter)
@@ -73,7 +73,7 @@ export default function VideoManager() {
     setBulkScheduleAt('')
   }
 
-  function togglePlatform(p: 'youtube' | 'instagram') {
+  function togglePlatform(p: 'youtube') {
     setBulkPlatforms((prev) => {
       const next = new Set(prev)
       if (next.has(p)) next.delete(p)
@@ -245,7 +245,6 @@ export default function VideoManager() {
                   <span>{formatDate(v.created_at)}</span>
                   <div className="flex items-center gap-1.5">
                     {v.platform_targets?.youtube?.enabled && <Youtube className={cn('h-3.5 w-3.5', v.platform_targets.youtube.status === 'posted' ? 'text-red-500' : 'text-white/25')} />}
-                    {v.platform_targets?.instagram?.enabled && <Instagram className={cn('h-3.5 w-3.5', v.platform_targets.instagram.status === 'posted' ? 'text-pink-400' : 'text-white/25')} />}
                   </div>
                 </div>
                 <div className="flex gap-2 pt-1">
@@ -323,15 +322,6 @@ export default function VideoManager() {
                   )}
                 >
                   <Youtube className="h-3.5 w-3.5" /> YouTube
-                </button>
-                <button
-                  onClick={() => togglePlatform('instagram')}
-                  className={cn(
-                    'flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition',
-                    bulkPlatforms.has('instagram') ? 'border-pink-400/60 bg-pink-400/10 text-white' : 'border-white/10 text-white/50 hover:text-white'
-                  )}
-                >
-                  <Instagram className="h-3.5 w-3.5" /> Instagram
                 </button>
                 <Button
                   size="sm"

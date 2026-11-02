@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link2, CheckCircle2, ExternalLink, Unlink, AlertTriangle } from 'lucide-react'
-import { Youtube, Instagram } from '@/components/BrandIcons'
+import { Youtube } from '@/components/BrandIcons'
 import { useSocialAccounts } from '@/lib/hooks'
 import { BASE_URL } from '@/lib/api'
 import { supabase } from '@/lib/supabase'
@@ -20,7 +20,6 @@ export default function Accounts() {
   }, [])
 
   const yt = accounts.find((a) => a.platform === 'youtube')
-  const ig = accounts.find((a) => a.platform === 'instagram')
 
   async function connect(platform: Platform) {
     setBusy(platform)
@@ -53,7 +52,7 @@ export default function Accounts() {
       <h1 className="flex items-center gap-3 font-display text-3xl font-bold text-white">
         <Link2 className="h-7 w-7 text-yolk-500" /> Connected accounts
       </h1>
-      <p className="mt-1 text-white/50">Link Instagram and YouTube so Autoviral can post directly on your behalf.</p>
+      <p className="mt-1 text-white/50">Link YouTube so Autoviral can post directly on your behalf.</p>
 
       {backendReachable === false && (
         <div className="mt-6 flex items-start gap-3 rounded-2xl border border-yolk-500/30 bg-yolk-500/10 p-4 text-sm text-yolk-300">
@@ -94,39 +93,13 @@ export default function Accounts() {
             </Button>
           )}
         </Card>
-
-        <Card>
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-pink-500/15">
-              <Instagram className="h-6 w-6 text-pink-400" />
-            </div>
-            <div>
-              <h3 className="font-display font-semibold text-white">Instagram</h3>
-              <p className="text-xs text-white/40">Reels via connected Business account</p>
-            </div>
-          </div>
-          {ig?.connected ? (
-            <div className="mt-5 space-y-3">
-              <div className="flex items-center gap-2 text-sm text-emerald-300">
-                <CheckCircle2 className="h-4 w-4" /> Connected as @{ig.account_name || 'yourbrand'}
-              </div>
-              <Button variant="secondary" size="sm" onClick={() => disconnect('instagram')}>
-                <Unlink className="h-3.5 w-3.5" /> Disconnect
-              </Button>
-            </div>
-          ) : (
-            <Button className="mt-5 w-full" onClick={() => connect('instagram')} loading={busy === 'instagram'}>
-              <ExternalLink className="h-4 w-4" /> Connect Instagram
-            </Button>
-          )}
-        </Card>
       </div>
 
       <Card className="mt-8">
         <h3 className="font-display font-semibold text-white">Setting up real posting</h3>
         <p className="mt-2 text-sm text-white/60">
-          Autoviral uses the real YouTube Data API and Instagram Graph API to post on your behalf. To activate this,
-          the site owner needs to create a Google Cloud OAuth client and a Meta Developer app, then add the
+          Autoviral uses the real YouTube Data API to post on your behalf. To activate this,
+          the site owner needs to create a Google Cloud OAuth client, then add the
           credentials to the server's <code className="rounded bg-black/30 px-1">.env</code>. Full steps are in{' '}
           <code className="rounded bg-black/30 px-1">SETUP.md</code>.
         </p>

@@ -56,7 +56,7 @@ create table if not exists public.videos (
   scheduled_at timestamptz,
   posted_at timestamptz,
   platform_targets jsonb not null default '{}'::jsonb,
-  -- e.g. {"youtube": {"enabled": true, "status": "posted", "url": "..."}, "instagram": {...}}
+  -- e.g. {"youtube": {"enabled": true, "status": "posted", "url": "..."}}
   credits_cost integer not null default 1,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -70,7 +70,7 @@ create index if not exists videos_scheduled_at_idx on public.videos(scheduled_at
 create table if not exists public.social_accounts (
   id uuid primary key default uuid_generate_v4(),
   user_id uuid not null references public.profiles(id) on delete cascade,
-  platform text not null check (platform in ('youtube', 'instagram')),
+  platform text not null check (platform in ('youtube')),
   account_name text,
   avatar_url text,
   access_token text,

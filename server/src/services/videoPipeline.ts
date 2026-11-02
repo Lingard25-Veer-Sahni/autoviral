@@ -553,13 +553,14 @@ export async function runGenerationPipeline(videoId: string, params: GenerateVid
 
     await report(0.9, 'Uploading video')
 
-    const videoUrl = await uploadToStorage('videos', `${params.userId}/${videoId}.mp4`, videoBuffer, 'video/mp4')
+    const videoUrl = await uploadToStorage('videos', `${params.userId}/${videoId}.mp4`, videoBuffer, 'video/mp4', params.isAdmin)
     await report(0.96, 'Uploading thumbnail')
     const thumbnailUrl = await uploadToStorage(
       'thumbnails',
       `${params.userId}/${videoId}.png`,
       thumbnailBuffer,
-      'image/png'
+      'image/png',
+      params.isAdmin
     )
 
     await supabaseAdmin

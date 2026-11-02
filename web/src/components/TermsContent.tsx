@@ -35,7 +35,7 @@ export function TermsContent() {
           You are responsible for maintaining the confidentiality of your account credentials and for all
           activity that occurs under your account, whether or not authorized by you. You must notify us promptly
           of any unauthorized use. We may suspend or terminate accounts that violate these Terms, applicable law,
-          or the terms of any connected third-party platform (e.g. YouTube, Instagram), at our sole discretion
+          or the terms of any connected third-party platform (e.g. YouTube), at our sole discretion
           and without liability to you.
         </p>
       </section>
@@ -72,7 +72,7 @@ export function TermsContent() {
         <h2 className="text-xs font-medium text-white">5. Your responsibility; indemnification</h2>
         <p className="mt-1">
           You are solely responsible for all content you generate, edit, approve, publish, or distribute through
-          the Service, and for any accounts (YouTube, Instagram, or otherwise) you connect to it. You agree not
+          the Service, and for any accounts (YouTube, or otherwise) you connect to it. You agree not
           to use the Service to generate or publish content that is unlawful, defamatory, infringing,
           harassing, fraudulent, or that violates any third party's rights or any applicable law or platform
           policy. You agree to indemnify, defend, and hold harmless Autoviral, its owners, operators, employees,
@@ -86,8 +86,8 @@ export function TermsContent() {
       <section>
         <h2 className="text-xs font-medium text-white">6. Third-party platforms</h2>
         <p className="mt-1">
-          The Service may connect to and post content on your behalf to third-party platforms (e.g. YouTube,
-          Instagram) via their respective APIs. Your use of those platforms remains subject to their own terms
+          The Service may connect to and post content on your behalf to third-party platforms (e.g. YouTube)
+          via their respective APIs. Your use of those platforms remains subject to their own terms
           of service and policies, which you are solely responsible for complying with. We are not responsible
           for any suspension, termination, demonetization, or other action taken against your third-party
           accounts, whether or not related to content generated or posted through the Service.
